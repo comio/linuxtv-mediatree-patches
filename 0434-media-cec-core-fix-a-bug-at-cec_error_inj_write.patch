@@ -1,0 +1,40 @@
+From 23c4354e495f12fb200a2252d65782294a14d0b8 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Fri, 23 Mar 2018 07:51:07 -0400
+Subject: [PATCH 434/437] media: cec-core: fix a bug at cec_error_inj_write()
+
+If the adapter doesn't have error_inj_parse_line() ops, the
+write() logic won't return -EINVAL, but, instead, it will keep
+looping, because "count" is a non-negative number.
+
+Reviewed-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/cec/cec-core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
+index ea3eccfdba15..b0c87f9ea08f 100644
+--- a/drivers/media/cec/cec-core.c
++++ b/drivers/media/cec/cec-core.c
+@@ -209,14 +209,14 @@ static ssize_t cec_error_inj_write(struct file *file,
+ 	if (IS_ERR(buf))
+ 		return PTR_ERR(buf);
+ 	p = buf;
+-	while (p && *p && count >= 0) {
++	while (p && *p) {
+ 		p = skip_spaces(p);
+ 		line = strsep(&p, "\n");
+ 		if (!*line || *line == '#')
+ 			continue;
+ 		if (!adap->ops->error_inj_parse_line(adap, line)) {
+-			count = -EINVAL;
+-			break;
++			kfree(buf);
++			return -EINVAL;
+ 		}
+ 	}
+ 	kfree(buf);
+-- 
+2.16.3
+

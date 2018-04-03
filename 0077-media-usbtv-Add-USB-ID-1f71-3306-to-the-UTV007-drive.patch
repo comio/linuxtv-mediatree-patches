@@ -1,0 +1,31 @@
+From fe618abd07c057ecd90a2392856a7c04cc3edfd6 Mon Sep 17 00:00:00 2001
+From: Ian Douglas Scott <ian@iandouglasscott.com>
+Date: Sun, 14 Jan 2018 19:27:55 -0500
+Subject: [PATCH 077/437] media: usbtv: Add USB ID 1f71:3306 to the UTV007
+ driver
+
+Add support for a new USB ID in this driver.
+
+Signed-off-by: Ian Douglas Scott <ian@iandouglasscott.com>
+[hans.verkuil@cisco.com: add commit message]
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/usb/usbtv/usbtv-core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/usb/usbtv/usbtv-core.c b/drivers/media/usb/usbtv/usbtv-core.c
+index 0c2e628e8723..5095c380b2c1 100644
+--- a/drivers/media/usb/usbtv/usbtv-core.c
++++ b/drivers/media/usb/usbtv/usbtv-core.c
+@@ -147,6 +147,7 @@ static void usbtv_disconnect(struct usb_interface *intf)
+ static const struct usb_device_id usbtv_id_table[] = {
+ 	{ USB_DEVICE(0x1b71, 0x3002) },
+ 	{ USB_DEVICE(0x1f71, 0x3301) },
++	{ USB_DEVICE(0x1f71, 0x3306) },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(usb, usbtv_id_table);
+-- 
+2.16.3
+

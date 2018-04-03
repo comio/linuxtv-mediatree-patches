@@ -1,0 +1,42 @@
+From bf50f62baaee7cd52455213c8504da4d09cc4228 Mon Sep 17 00:00:00 2001
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+Date: Sun, 21 Jan 2018 16:48:45 -0500
+Subject: [PATCH 025/437] media: staging: atomisp: mt9m114: Drop empty s_parm
+ callback
+
+The s_parm callback in mt9m114 driver did nothing, remove it.
+
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index df253a557c76..834fba8c4fa0 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -1684,11 +1684,6 @@ static int mt9m114_t_vflip(struct v4l2_subdev *sd, int value)
+ 
+ 	return !!err;
+ }
+-static int mt9m114_s_parm(struct v4l2_subdev *sd,
+-			struct v4l2_streamparm *param)
+-{
+-	return 0;
+-}
+ 
+ static int mt9m114_g_frame_interval(struct v4l2_subdev *sd,
+ 				   struct v4l2_subdev_frame_interval *interval)
+@@ -1781,7 +1776,6 @@ static int mt9m114_g_skip_frames(struct v4l2_subdev *sd, u32 *frames)
+ }
+ 
+ static const struct v4l2_subdev_video_ops mt9m114_video_ops = {
+-	.s_parm = mt9m114_s_parm,
+ 	.s_stream = mt9m114_s_stream,
+ 	.g_frame_interval = mt9m114_g_frame_interval,
+ };
+-- 
+2.16.3
+

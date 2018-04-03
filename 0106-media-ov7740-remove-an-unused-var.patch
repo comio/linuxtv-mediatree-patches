@@ -1,0 +1,29 @@
+From 1b0819a14d081555645caa781b232800a47a63b9 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Mon, 26 Feb 2018 08:28:22 -0500
+Subject: [PATCH 106/437] media: ov7740: remove an unused var
+
+Fix this warning regression:
+   drivers/media/i2c/ov7740.c: warning: variable 'ret' set but not used [-Wunused-but-set-variable]:  => 276:6
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/ov7740.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/ov7740.c b/drivers/media/i2c/ov7740.c
+index e1a44a18d9a8..01f578785e79 100644
+--- a/drivers/media/i2c/ov7740.c
++++ b/drivers/media/i2c/ov7740.c
+@@ -279,7 +279,7 @@ static int ov7740_get_register(struct v4l2_subdev *sd,
+ 	reg->val = val;
+ 	reg->size = 1;
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int ov7740_set_register(struct v4l2_subdev *sd,
+-- 
+2.16.3
+

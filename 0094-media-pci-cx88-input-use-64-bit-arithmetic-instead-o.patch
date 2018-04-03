@@ -1,0 +1,49 @@
+From f017555a7c15b63bc3de5e2640902955213bfe55 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Tue, 6 Feb 2018 11:49:04 -0500
+Subject: [PATCH 094/437] media: pci: cx88-input: use 64-bit arithmetic instead
+ of 32-bit
+
+Add suffix LL to constant 1000000 in order to give the compiler
+complete information about the proper arithmetic to use. Notice
+that this constant is used in a context that expects an expression
+of type ktime_t (64 bits, signed).
+
+The expression ir->polling * 1000000 is currently being evaluated
+using 32-bit arithmetic.
+
+Addresses-Coverity-ID: 1392628 ("Unintentional integer overflow")
+Addresses-Coverity-ID: 1392630 ("Unintentional integer overflow")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/pci/cx88/cx88-input.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/pci/cx88/cx88-input.c b/drivers/media/pci/cx88/cx88-input.c
+index 4e9953e61a12..6f4e6923a91a 100644
+--- a/drivers/media/pci/cx88/cx88-input.c
++++ b/drivers/media/pci/cx88/cx88-input.c
+@@ -180,7 +180,7 @@ static enum hrtimer_restart cx88_ir_work(struct hrtimer *timer)
+ 	struct cx88_IR *ir = container_of(timer, struct cx88_IR, timer);
+ 
+ 	cx88_ir_handle_key(ir);
+-	missed = hrtimer_forward_now(&ir->timer, ir->polling * 1000000);
++	missed = hrtimer_forward_now(&ir->timer, ir->polling * 1000000LL);
+ 	if (missed > 1)
+ 		ir_dprintk("Missed ticks %ld\n", missed - 1);
+ 
+@@ -200,7 +200,7 @@ static int __cx88_ir_start(void *priv)
+ 	if (ir->polling) {
+ 		hrtimer_init(&ir->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+ 		ir->timer.function = cx88_ir_work;
+-		hrtimer_start(&ir->timer, ir->polling * 1000000,
++		hrtimer_start(&ir->timer, ir->polling * 1000000LL,
+ 			      HRTIMER_MODE_REL);
+ 	}
+ 	if (ir->sampling) {
+-- 
+2.16.3
+

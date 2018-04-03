@@ -1,0 +1,46 @@
+From 27efb7d61c4b8a185f11eb9dbd3a790cef215d37 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@st.com>
+Date: Wed, 31 Jan 2018 07:46:17 -0500
+Subject: [PATCH 061/437] media: ov5640: add error trace in case of i2c read
+ failure
+
+Add an error trace in ov5640_read_reg() in case of i2c_transfer()
+failure.
+Uniformize error traces using dev_err instead v4l2_err.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/ov5640.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
+index 99a590263070..6f1846081dbe 100644
+--- a/drivers/media/i2c/ov5640.c
++++ b/drivers/media/i2c/ov5640.c
+@@ -839,7 +839,7 @@ static int ov5640_write_reg(struct ov5640_dev *sensor, u16 reg, u8 val)
+ 
+ 	ret = i2c_transfer(client->adapter, &msg, 1);
+ 	if (ret < 0) {
+-		v4l2_err(&sensor->sd, "%s: error: reg=%x, val=%x\n",
++		dev_err(&client->dev, "%s: error: reg=%x, val=%x\n",
+ 			__func__, reg, val);
+ 		return ret;
+ 	}
+@@ -868,8 +868,11 @@ static int ov5640_read_reg(struct ov5640_dev *sensor, u16 reg, u8 *val)
+ 	msg[1].len = 1;
+ 
+ 	ret = i2c_transfer(client->adapter, msg, 2);
+-	if (ret < 0)
++	if (ret < 0) {
++		dev_err(&client->dev, "%s: error: reg=%x\n",
++			__func__, reg);
+ 		return ret;
++	}
+ 
+ 	*val = buf[0];
+ 	return 0;
+-- 
+2.16.3
+

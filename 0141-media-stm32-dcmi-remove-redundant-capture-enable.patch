@@ -1,0 +1,32 @@
+From 71d5402d0100171c84059a9c6815411467337ff1 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@st.com>
+Date: Wed, 7 Feb 2018 12:35:34 -0500
+Subject: [PATCH 141/437] media: stm32-dcmi: remove redundant capture enable
+
+Remove redundant capture enable already done
+in dcmi_start_capture().
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/stm32/stm32-dcmi.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/media/platform/stm32/stm32-dcmi.c b/drivers/media/platform/stm32/stm32-dcmi.c
+index 3319d9cb1b12..0993b55b8bd3 100644
+--- a/drivers/media/platform/stm32/stm32-dcmi.c
++++ b/drivers/media/platform/stm32/stm32-dcmi.c
+@@ -255,9 +255,6 @@ static void dcmi_dma_callback(void *param)
+ 				spin_unlock(&dcmi->irqlock);
+ 				return;
+ 			}
+-
+-			/* Enable capture */
+-			reg_set(dcmi->regs, DCMI_CR, CR_CAPTURE);
+ 		}
+ 
+ 		break;
+-- 
+2.16.3
+

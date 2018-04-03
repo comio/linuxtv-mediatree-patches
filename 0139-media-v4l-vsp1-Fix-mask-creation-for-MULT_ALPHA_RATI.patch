@@ -1,0 +1,33 @@
+From 9105ee0899adb6dd5297b2567cbbbb2180d62ec9 Mon Sep 17 00:00:00 2001
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Date: Mon, 5 Feb 2018 15:09:58 -0500
+Subject: [PATCH 139/437] media: v4l: vsp1: Fix mask creation for
+ MULT_ALPHA_RATIO
+
+Due to a typo, the mask was destroyed by a comparison instead of a bit
+shift. No regression since the mask has not been used yet.
+
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/vsp1/vsp1_regs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/vsp1/vsp1_regs.h b/drivers/media/platform/vsp1/vsp1_regs.h
+index 26c4ffad2f46..b1912c83a1da 100644
+--- a/drivers/media/platform/vsp1/vsp1_regs.h
++++ b/drivers/media/platform/vsp1/vsp1_regs.h
+@@ -225,7 +225,7 @@
+ #define VI6_RPF_MULT_ALPHA_P_MMD_RATIO	(1 << 8)
+ #define VI6_RPF_MULT_ALPHA_P_MMD_IMAGE	(2 << 8)
+ #define VI6_RPF_MULT_ALPHA_P_MMD_BOTH	(3 << 8)
+-#define VI6_RPF_MULT_ALPHA_RATIO_MASK	(0xff < 0)
++#define VI6_RPF_MULT_ALPHA_RATIO_MASK	(0xff << 0)
+ #define VI6_RPF_MULT_ALPHA_RATIO_SHIFT	0
+ 
+ /* -----------------------------------------------------------------------------
+-- 
+2.16.3
+

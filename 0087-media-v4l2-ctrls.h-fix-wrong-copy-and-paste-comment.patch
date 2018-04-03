@@ -1,0 +1,34 @@
+From 9796e3491f7c30c057d4f10428fa8d0044478be7 Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Date: Sat, 3 Feb 2018 08:18:14 -0500
+Subject: [PATCH 087/437] media: v4l2-ctrls.h: fix wrong copy-and-paste comment
+
+The __v4l2_ctrl_modify_range is the unlocked variant, so the comment about
+taking a lock is obviously wrong.
+
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ include/media/v4l2-ctrls.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
+index 05ebb9ef9e73..5b445b5654f7 100644
+--- a/include/media/v4l2-ctrls.h
++++ b/include/media/v4l2-ctrls.h
+@@ -761,8 +761,8 @@ void v4l2_ctrl_grab(struct v4l2_ctrl *ctrl, bool grabbed);
+  * An error is returned if one of the range arguments is invalid for this
+  * control type.
+  *
+- * This function assumes that the control handler is not locked and will
+- * take the lock itself.
++ * The caller is responsible for acquiring the control handler mutex on behalf
++ * of __v4l2_ctrl_modify_range().
+  */
+ int __v4l2_ctrl_modify_range(struct v4l2_ctrl *ctrl,
+ 			     s64 min, s64 max, u64 step, s64 def);
+-- 
+2.16.3
+

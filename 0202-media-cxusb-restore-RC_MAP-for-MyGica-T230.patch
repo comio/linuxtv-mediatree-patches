@@ -1,0 +1,37 @@
+From 0a0c10f3f7fdade14e13d727a0c5b76f82a0eb6e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Stefan=20Br=C3=BCns?= <stefan.bruens@rwth-aachen.de>
+Date: Tue, 9 Jan 2018 18:33:39 -0500
+Subject: [PATCH 202/437] media: cxusb: restore RC_MAP for MyGica T230
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Commit f8585ce655e9 ("[media] dvb-usb-cxusb: Geniatech T230C support")
+sneaked in an unrelated change for the older T230 (not C) model.
+
+As the commit was reverted this change was reverted too,
+although likely correct.
+
+Fixes: f8585ce655e9 ("[media] dvb-usb-cxusb: Geniatech T230C support")
+Signed-off-by: Stefan Brüns <stefan.bruens@rwth-aachen.de>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/usb/dvb-usb/cxusb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/usb/dvb-usb/cxusb.c b/drivers/media/usb/dvb-usb/cxusb.c
+index 6387910976b4..387a074ea6ec 100644
+--- a/drivers/media/usb/dvb-usb/cxusb.c
++++ b/drivers/media/usb/dvb-usb/cxusb.c
+@@ -2060,7 +2060,7 @@ static struct dvb_usb_device_properties cxusb_d680_dmb_properties = {
+ 
+ 	.rc.core = {
+ 		.rc_interval	= 100,
+-		.rc_codes	= RC_MAP_D680_DMB,
++		.rc_codes	= RC_MAP_TOTAL_MEDIA_IN_HAND_02,
+ 		.module_name	= KBUILD_MODNAME,
+ 		.rc_query       = cxusb_d680_dmb_rc_query,
+ 		.allowed_protos = RC_PROTO_BIT_UNKNOWN,
+-- 
+2.16.3
+

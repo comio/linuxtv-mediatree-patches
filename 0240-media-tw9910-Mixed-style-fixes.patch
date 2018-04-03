@@ -1,0 +1,43 @@
+From 3ea30929fe22a583c85377f05705da1b3967938b Mon Sep 17 00:00:00 2001
+From: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Date: Fri, 2 Mar 2018 09:46:35 -0500
+Subject: [PATCH 240/437] media: tw9910: Mixed style fixes
+
+Two minor style fixes, align function parameter and remove un-necessary
+spaces.
+
+Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/tw9910.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/i2c/tw9910.c b/drivers/media/i2c/tw9910.c
+index 2d5cdb944330..7c7f3438781c 100644
+--- a/drivers/media/i2c/tw9910.c
++++ b/drivers/media/i2c/tw9910.c
+@@ -533,9 +533,9 @@ static int tw9910_s_std(struct v4l2_subdev *sd, v4l2_std_id norm)
+ 	}
+ 	if (!ret)
+ 		ret = i2c_smbus_write_byte_data(client, CROP_HI,
+-						((vdelay >> 2) & 0xc0) |
+-						((vact >> 4) & 0x30) |
+-						((hdelay >> 6) & 0x0c) |
++						((vdelay >> 2) & 0xc0)	|
++						((vact >> 4) & 0x30)	|
++						((hdelay >> 6) & 0x0c)	|
+ 						((hact >> 8) & 0x03));
+ 	if (!ret)
+ 		ret = i2c_smbus_write_byte_data(client, VDELAY_LO,
+@@ -954,7 +954,7 @@ static int tw9910_probe(struct i2c_client *client,
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	priv->info   = info;
++	priv->info = info;
+ 
+ 	v4l2_i2c_subdev_init(&priv->subdev, client, &tw9910_subdev_ops);
+ 
+-- 
+2.16.3
+

@@ -1,0 +1,51 @@
+From 8a14d22e050b2277cedfa89b232836bcf3d47e2a Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Tue, 6 Feb 2018 11:53:44 -0500
+Subject: [PATCH 097/437] media: platform: vivid-cec: use 64-bit arithmetic
+ instead of 32-bit
+
+Add suffix ULL to constant 10 in order to give the compiler complete
+information about the proper arithmetic to use. Notice that this
+constant is used in a context that expects an expression of type
+u64 (64 bits, unsigned).
+
+The expression len * 10 * CEC_TIM_DATA_BIT_TOTAL is currently being
+evaluated using 32-bit arithmetic.
+
+Also, remove unnecessary parentheses and add a code comment to make it
+clear what is the reason of the code change.
+
+Addresses-Coverity-ID: 1454996 ("Unintentional integer overflow")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/vivid/vivid-cec.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/vivid/vivid-cec.c b/drivers/media/platform/vivid/vivid-cec.c
+index 619bd8435b7f..c2c889d6dcf5 100644
+--- a/drivers/media/platform/vivid/vivid-cec.c
++++ b/drivers/media/platform/vivid/vivid-cec.c
+@@ -70,8 +70,15 @@ static void vivid_cec_pin_adap_events(struct cec_adapter *adap, ktime_t ts,
+ 
+ 	if (adap == NULL)
+ 		return;
+-	ts = ktime_sub_us(ts, (CEC_TIM_START_BIT_TOTAL +
+-			       len * 10 * CEC_TIM_DATA_BIT_TOTAL));
++
++	/*
++	 * Suffix ULL on constant 10 makes the expression
++	 * CEC_TIM_START_BIT_TOTAL + 10ULL * len * CEC_TIM_DATA_BIT_TOTAL
++	 * to be evaluated using 64-bit unsigned arithmetic (u64), which
++	 * is what ktime_sub_us expects as second argument.
++	 */
++	ts = ktime_sub_us(ts, CEC_TIM_START_BIT_TOTAL +
++			       10ULL * len * CEC_TIM_DATA_BIT_TOTAL);
+ 	cec_queue_pin_cec_event(adap, false, ts);
+ 	ts = ktime_add_us(ts, CEC_TIM_START_BIT_LOW);
+ 	cec_queue_pin_cec_event(adap, true, ts);
+-- 
+2.16.3
+

@@ -1,0 +1,57 @@
+From f4a864473072f0fbda47d1b23c65ee8faf1efbe1 Mon Sep 17 00:00:00 2001
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Date: Mon, 22 Jan 2018 11:16:32 -0500
+Subject: [PATCH 331/437] media: imx: add 8-bit grayscale support
+
+The IPUv3 code has 8-bit grayscale capture support.
+Enable imx-media to use it.
+
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/staging/media/imx/imx-media-csi.c   | 1 +
+ drivers/staging/media/imx/imx-media-utils.c | 8 +++++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/imx/imx-media-csi.c b/drivers/staging/media/imx/imx-media-csi.c
+index 5a195f80a24d..1aa2be891704 100644
+--- a/drivers/staging/media/imx/imx-media-csi.c
++++ b/drivers/staging/media/imx/imx-media-csi.c
+@@ -400,6 +400,7 @@ static int csi_idmac_setup_channel(struct csi_priv *priv)
+ 	case V4L2_PIX_FMT_SGBRG8:
+ 	case V4L2_PIX_FMT_SGRBG8:
+ 	case V4L2_PIX_FMT_SRGGB8:
++	case V4L2_PIX_FMT_GREY:
+ 		burst_size = 16;
+ 		passthrough = true;
+ 		passthrough_bits = 8;
+diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/staging/media/imx/imx-media-utils.c
+index 8920f9b6eb0c..40bcb8fb18b9 100644
+--- a/drivers/staging/media/imx/imx-media-utils.c
++++ b/drivers/staging/media/imx/imx-media-utils.c
+@@ -93,7 +93,7 @@ static const struct imx_media_pixfmt rgb_formats[] = {
+ 		.bpp    = 32,
+ 		.ipufmt = true,
+ 	},
+-	/*** raw bayer formats start here ***/
++	/*** raw bayer and grayscale formats start here ***/
+ 	{
+ 		.fourcc = V4L2_PIX_FMT_SBGGR8,
+ 		.codes  = {MEDIA_BUS_FMT_SBGGR8_1X8},
+@@ -162,6 +162,12 @@ static const struct imx_media_pixfmt rgb_formats[] = {
+ 		.cs     = IPUV3_COLORSPACE_RGB,
+ 		.bpp    = 16,
+ 		.bayer  = true,
++	}, {
++		.fourcc = V4L2_PIX_FMT_GREY,
++		.codes = {MEDIA_BUS_FMT_Y8_1X8},
++		.cs     = IPUV3_COLORSPACE_RGB,
++		.bpp    = 8,
++		.bayer  = true,
+ 	},
+ 	/***
+ 	 * non-mbus RGB formats start here. NOTE! when adding non-mbus
+-- 
+2.16.3
+

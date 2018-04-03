@@ -1,0 +1,31 @@
+From 98739e77ff334595288b2eca83446ecf480ce7a6 Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Date: Mon, 5 Feb 2018 04:30:48 -0500
+Subject: [PATCH 131/437] media: media.h: fix confusing typo in comment
+
+Subdevs are initialized with MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN, not
+MEDIA_ENT_T_V4L2_SUBDEV_UNKNOWN.
+
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ include/uapi/linux/media.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+index 2f12328e260d..3e8a28a5429f 100644
+--- a/include/uapi/linux/media.h
++++ b/include/uapi/linux/media.h
+@@ -136,7 +136,7 @@ struct media_device_info {
+  * with the legacy v1 API.The number range is out of range by purpose:
+  * several previously reserved numbers got excluded from this range.
+  *
+- * Subdevs are initialized with MEDIA_ENT_T_V4L2_SUBDEV_UNKNOWN,
++ * Subdevs are initialized with MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN,
+  * in order to preserve backward compatibility.
+  * Drivers must change to the proper subdev type before
+  * registering the entity.
+-- 
+2.16.3
+

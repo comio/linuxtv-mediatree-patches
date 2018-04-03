@@ -1,0 +1,47 @@
+From 8d49fceeb7f3459b03d02a490240bd53e5d93dd5 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Wed, 7 Mar 2018 04:11:50 -0500
+Subject: [PATCH 275/437] media: dvbdev: fix building on ia64
+
+Not sure why, but, on ia64, with Linaro's gcc 7.3 compiler,
+using #ifdef (CONFIG_I2C) is not OK.
+
+So, replace it by IS_ENABLED(CONFIG_I2C), in order to fix the
+builds there.
+
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/dvb-core/dvbdev.c | 2 +-
+ include/media/dvbdev.h          | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
+index a840133feacb..cf747d753a79 100644
+--- a/drivers/media/dvb-core/dvbdev.c
++++ b/drivers/media/dvb-core/dvbdev.c
+@@ -942,7 +942,7 @@ int dvb_usercopy(struct file *file,
+ 	return err;
+ }
+ 
+-#ifdef CONFIG_I2C
++#if IS_ENABLED(CONFIG_I2C)
+ struct i2c_client *dvb_module_probe(const char *module_name,
+ 				    const char *name,
+ 				    struct i2c_adapter *adap,
+diff --git a/include/media/dvbdev.h b/include/media/dvbdev.h
+index 2d2897508590..ee91516ad074 100644
+--- a/include/media/dvbdev.h
++++ b/include/media/dvbdev.h
+@@ -358,7 +358,7 @@ long dvb_generic_ioctl(struct file *file,
+ int dvb_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
+ 		 int (*func)(struct file *file, unsigned int cmd, void *arg));
+ 
+-#ifdef CONFIG_I2C
++#if IS_ENABLED(CONFIG_I2C)
+ 
+ struct i2c_adapter;
+ struct i2c_client;
+-- 
+2.16.3
+

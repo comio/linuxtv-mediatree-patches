@@ -1,0 +1,29 @@
+From 38cf857780d52e2ad736feb2297b701e90e726ec Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Tue, 6 Mar 2018 14:14:57 -0500
+Subject: [PATCH 265/437] media: cx231xx: Use frontend i2c adapter with tuner
+
+Utilize the i2c mux adapter returned by the frontend.
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/usb/cx231xx/cx231xx-dvb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/usb/cx231xx/cx231xx-dvb.c b/drivers/media/usb/cx231xx/cx231xx-dvb.c
+index 7c3863ad6f23..680c175be28d 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-dvb.c
++++ b/drivers/media/usb/cx231xx/cx231xx-dvb.c
+@@ -1221,7 +1221,7 @@ static int dvb_init(struct cx231xx *dev)
+ 		info.platform_data = &si2157_config;
+ 		request_module("si2157");
+ 
+-		client = i2c_new_device(tuner_i2c, &info);
++		client = i2c_new_device(adapter, &info);
+ 		if (client == NULL || client->dev.driver == NULL) {
+ 			module_put(dvb->i2c_client_demod[0]->dev.driver->owner);
+ 			i2c_unregister_device(dvb->i2c_client_demod[0]);
+-- 
+2.16.3
+

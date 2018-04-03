@@ -1,0 +1,51 @@
+From 31bcb2eb79ececc0ffe7e17ce423660f7a15354c Mon Sep 17 00:00:00 2001
+From: Luca Ceresoli <luca@lucaceresoli.net>
+Date: Thu, 8 Mar 2018 07:26:20 -0500
+Subject: [PATCH 322/437] media: vb2-core: vb2_buffer_done: consolidate docs
+
+Documentation about what start_streaming() should do on failure are
+scattered in two places and mostly duplicated, so consolidate them in
+one of the two places.
+
+Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Pawel Osciak <pawel@osciak.com>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ include/media/videobuf2-core.h | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+index 5b6c541e4e1b..f1a479060f9e 100644
+--- a/include/media/videobuf2-core.h
++++ b/include/media/videobuf2-core.h
+@@ -602,9 +602,7 @@ void *vb2_plane_cookie(struct vb2_buffer *vb, unsigned int plane_no);
+  *		Either %VB2_BUF_STATE_DONE if the operation finished
+  *		successfully, %VB2_BUF_STATE_ERROR if the operation finished
+  *		with an error or %VB2_BUF_STATE_QUEUED if the driver wants to
+- *		requeue buffers. If start_streaming fails then it should return
+- *		buffers with state %VB2_BUF_STATE_QUEUED to put them back into
+- *		the queue.
++ *		requeue buffers.
+  *
+  * This function should be called by the driver after a hardware operation on
+  * a buffer is finished and the buffer may be returned to userspace. The driver
+@@ -613,9 +611,9 @@ void *vb2_plane_cookie(struct vb2_buffer *vb, unsigned int plane_no);
+  * to the driver by &vb2_ops->buf_queue can be passed to this function.
+  *
+  * While streaming a buffer can only be returned in state DONE or ERROR.
+- * The start_streaming op can also return them in case the DMA engine cannot
+- * be started for some reason. In that case the buffers should be returned with
+- * state QUEUED.
++ * The &vb2_ops->start_streaming op can also return them in case the DMA engine
++ * cannot be started for some reason. In that case the buffers should be
++ * returned with state QUEUED to put them back into the queue.
+  */
+ void vb2_buffer_done(struct vb2_buffer *vb, enum vb2_buffer_state state);
+ 
+-- 
+2.16.3
+

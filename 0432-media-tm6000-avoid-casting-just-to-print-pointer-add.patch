@@ -1,0 +1,32 @@
+From aa21f2d4aa322084c643eab1dfb6b2261bc400d8 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Fri, 23 Mar 2018 07:42:32 -0400
+Subject: [PATCH 432/437] media: tm6000:  avoid casting just to print pointer
+ address
+
+Instead of casting, just use %p.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/usb/tm6000/tm6000-video.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/usb/tm6000/tm6000-video.c b/drivers/media/usb/tm6000/tm6000-video.c
+index 8314d3fa9241..b2399d4266da 100644
+--- a/drivers/media/usb/tm6000/tm6000-video.c
++++ b/drivers/media/usb/tm6000/tm6000-video.c
+@@ -1346,9 +1346,8 @@ static int __tm6000_open(struct file *file)
+ 	fh->width = dev->width;
+ 	fh->height = dev->height;
+ 
+-	dprintk(dev, V4L2_DEBUG_OPEN, "Open: fh=0x%08lx, dev=0x%08lx, dev->vidq=0x%08lx\n",
+-			(unsigned long)fh, (unsigned long)dev,
+-			(unsigned long)&dev->vidq);
++	dprintk(dev, V4L2_DEBUG_OPEN, "Open: fh=%p, dev=%p, dev->vidq=%p\n",
++		fh, dev, &dev->vidq);
+ 	dprintk(dev, V4L2_DEBUG_OPEN, "Open: list_empty queued=%d\n",
+ 		list_empty(&dev->vidq.queued));
+ 	dprintk(dev, V4L2_DEBUG_OPEN, "Open: list_empty active=%d\n",
+-- 
+2.16.3
+

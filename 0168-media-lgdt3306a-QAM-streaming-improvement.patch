@@ -1,0 +1,54 @@
+From a3fe31fd75e680a02b8350fed36f47d74529f2e7 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Thu, 4 Jan 2018 20:30:24 -0500
+Subject: [PATCH 168/437] media: lgdt3306a: QAM streaming improvement
+
+Add some register updates required for stable viewing
+on Cablevision in NY. Does not adversely affect other providers.
+
+Changes since v1:
+- Change upper case hex to lower case.
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+Reviewed-by: Michael Ira Krufky <mkrufky@linuxtv.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/dvb-frontends/lgdt3306a.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
+index d2477edae197..377271decbab 100644
+--- a/drivers/media/dvb-frontends/lgdt3306a.c
++++ b/drivers/media/dvb-frontends/lgdt3306a.c
+@@ -598,6 +598,28 @@ static int lgdt3306a_set_qam(struct lgdt3306a_state *state, int modulation)
+ 	if (lg_chkerr(ret))
+ 		goto fail;
+ 
++	/* 5.1 V0.36 SRDCHKALWAYS : For better QAM detection */
++	ret = lgdt3306a_read_reg(state, 0x000a, &val);
++	val &= 0xfd;
++	val |= 0x02;
++	ret = lgdt3306a_write_reg(state, 0x000a, val);
++	if (lg_chkerr(ret))
++		goto fail;
++
++	/* 5.2 V0.36 Control of "no signal" detector function */
++	ret = lgdt3306a_read_reg(state, 0x2849, &val);
++	val &= 0xdf;
++	ret = lgdt3306a_write_reg(state, 0x2849, val);
++	if (lg_chkerr(ret))
++		goto fail;
++
++	/* 5.3 Fix for Blonder Tongue HDE-2H-QAM and AQM modulators */
++	ret = lgdt3306a_read_reg(state, 0x302b, &val);
++	val &= 0x7f;  /* SELFSYNCFINDEN_CQS=0; disable auto reset */
++	ret = lgdt3306a_write_reg(state, 0x302b, val);
++	if (lg_chkerr(ret))
++		goto fail;
++
+ 	/* 6. Reset */
+ 	ret = lgdt3306a_soft_reset(state);
+ 	if (lg_chkerr(ret))
+-- 
+2.16.3
+

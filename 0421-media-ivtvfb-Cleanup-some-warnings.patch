@@ -1,0 +1,48 @@
+From 50e6bc7eebf7391855a461cd8dce5bc3687b24a8 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Fri, 23 Mar 2018 06:52:25 -0400
+Subject: [PATCH 421/437] media: ivtvfb: Cleanup some warnings
+
+drivers/media/pci/ivtv/ivtvfb.c:349 ivtvfb_prep_frame() warn: argument 3 to %08lx specifier is cast from pointer
+drivers/media/pci/ivtv/ivtvfb.c:360 ivtvfb_prep_frame() warn: argument 3 to %08lx specifier is cast from pointer
+drivers/media/pci/ivtv/ivtvfb.c:363 ivtvfb_prep_frame() warn: argument 4 to %08lx specifier is cast from pointer
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/pci/ivtv/ivtvfb.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/media/pci/ivtv/ivtvfb.c b/drivers/media/pci/ivtv/ivtvfb.c
+index 621b2f613d81..8e62b8be6529 100644
+--- a/drivers/media/pci/ivtv/ivtvfb.c
++++ b/drivers/media/pci/ivtv/ivtvfb.c
+@@ -346,8 +346,8 @@ static int ivtvfb_prep_frame(struct ivtv *itv, int cmd, void __user *source,
+ 
+ 	/* Not fatal, but will have undesirable results */
+ 	if ((unsigned long)source & 3)
+-		IVTVFB_WARN("ivtvfb_prep_frame: Source address not 32 bit aligned (0x%08lx)\n",
+-			(unsigned long)source);
++		IVTVFB_WARN("ivtvfb_prep_frame: Source address not 32 bit aligned (%p)\n",
++			    source);
+ 
+ 	if (dest_offset & 3)
+ 		IVTVFB_WARN("ivtvfb_prep_frame: Dest offset not 32 bit aligned (%ld)\n", dest_offset);
+@@ -357,12 +357,10 @@ static int ivtvfb_prep_frame(struct ivtv *itv, int cmd, void __user *source,
+ 
+ 	/* Check Source */
+ 	if (!access_ok(VERIFY_READ, source + dest_offset, count)) {
+-		IVTVFB_WARN("Invalid userspace pointer 0x%08lx\n",
+-			(unsigned long)source);
++		IVTVFB_WARN("Invalid userspace pointer %p\n", source);
+ 
+-		IVTVFB_DEBUG_WARN("access_ok() failed for offset 0x%08lx source 0x%08lx count %d\n",
+-			dest_offset, (unsigned long)source,
+-			count);
++		IVTVFB_DEBUG_WARN("access_ok() failed for offset 0x%08lx source %p count %d\n",
++				  dest_offset, source, count);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.16.3
+

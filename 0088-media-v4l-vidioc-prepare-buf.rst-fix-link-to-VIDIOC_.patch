@@ -1,0 +1,35 @@
+From 09d61da14b9d0bbec1078243ac9c99bfddbe4135 Mon Sep 17 00:00:00 2001
+From: Alexandre Courbot <acourbot@chromium.org>
+Date: Sun, 4 Feb 2018 21:24:43 -0500
+Subject: [PATCH 088/437] media: v4l: vidioc-prepare-buf.rst: fix link to
+ VIDIOC_QBUF
+
+The description for VIDIOC_PREPARE_BUF results in the following
+sentence: "...before actually enqueuing it, using the ioctl VIDIOC_QBUF,
+VIDIOC_DQBUF ioctl...".
+
+The intent is to only refer to VIDIOC_QBUF though, so fix this.
+
+Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ Documentation/media/uapi/v4l/vidioc-prepare-buf.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/media/uapi/v4l/vidioc-prepare-buf.rst b/Documentation/media/uapi/v4l/vidioc-prepare-buf.rst
+index 70687a86ae38..49f9f4c181de 100644
+--- a/Documentation/media/uapi/v4l/vidioc-prepare-buf.rst
++++ b/Documentation/media/uapi/v4l/vidioc-prepare-buf.rst
+@@ -34,7 +34,7 @@ Description
+ 
+ Applications can optionally call the :ref:`VIDIOC_PREPARE_BUF` ioctl to
+ pass ownership of the buffer to the driver before actually enqueuing it,
+-using the :ref:`VIDIOC_QBUF` ioctl, and to prepare it for future I/O. Such
++using the :ref:`VIDIOC_QBUF <VIDIOC_QBUF>` ioctl, and to prepare it for future I/O. Such
+ preparations may include cache invalidation or cleaning. Performing them
+ in advance saves time during the actual I/O. In case such cache
+ operations are not required, the application can use one of
+-- 
+2.16.3
+

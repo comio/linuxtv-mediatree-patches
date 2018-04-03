@@ -1,0 +1,36 @@
+From d3f56f4bf2338096f402e58ce8e8ccecfa560e64 Mon Sep 17 00:00:00 2001
+From: Ulf Magnusson <ulfalizer@gmail.com>
+Date: Sun, 4 Feb 2018 20:21:29 -0500
+Subject: [PATCH 215/437] media: sec: Remove PLAT_S5P dependency
+
+The PLAT_S5P symbol was removed in commit d78c16ccde96 ("ARM: SAMSUNG:
+Remove remaining legacy code").
+
+Remove the PLAT_S5P dependency from VIDEO_SAMSUNG_S5P_CEC.
+
+Discovered with the
+https://github.com/ulfalizer/Kconfiglib/blob/master/examples/list_undefined.py
+script.
+
+Signed-off-by: Ulf Magnusson <ulfalizer@gmail.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index f9cc0582c8a9..5d8fd71fc454 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -591,7 +591,7 @@ config CEC_GPIO
+ 
+ config VIDEO_SAMSUNG_S5P_CEC
+        tristate "Samsung S5P CEC driver"
+-       depends on PLAT_S5P || ARCH_EXYNOS || COMPILE_TEST
++       depends on ARCH_EXYNOS || COMPILE_TEST
+        select CEC_CORE
+        select CEC_NOTIFIER
+        ---help---
+-- 
+2.16.3
+

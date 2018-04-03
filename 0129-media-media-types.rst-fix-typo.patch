@@ -1,0 +1,30 @@
+From c9f0531434d81b6a148ec55abf19d0893f53c14c Mon Sep 17 00:00:00 2001
+From: Alexandre Courbot <acourbot@chromium.org>
+Date: Sun, 4 Feb 2018 21:24:02 -0500
+Subject: [PATCH 129/437] media: media-types.rst: fix typo
+
+with -> which
+
+Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ Documentation/media/uapi/mediactl/media-types.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/media/uapi/mediactl/media-types.rst b/Documentation/media/uapi/mediactl/media-types.rst
+index d9e71a929109..f92f10b7ffbd 100644
+--- a/Documentation/media/uapi/mediactl/media-types.rst
++++ b/Documentation/media/uapi/mediactl/media-types.rst
+@@ -26,7 +26,7 @@ Types and flags used to represent the media graph elements
+ 	  ``MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN``
+ 
+        -  Unknown entity. That generally indicates that a driver didn't
+-	  initialize properly the entity, with is a Kernel bug
++	  initialize properly the entity, which is a Kernel bug
+ 
+     -  .. row 2
+ 
+-- 
+2.16.3
+

@@ -1,0 +1,30 @@
+From fb5411ea58e1fe105fc5e5cbe82a5f6e5639a34b Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Date: Thu, 15 Feb 2018 10:54:44 -0500
+Subject: [PATCH 151/437] media: imx/Kconfig: add depends on HAS_DMA
+
+Add missing dependency.
+
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Acked-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/staging/media/imx/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/staging/media/imx/Kconfig b/drivers/staging/media/imx/Kconfig
+index 59b380cc6d22..bfc17de56b17 100644
+--- a/drivers/staging/media/imx/Kconfig
++++ b/drivers/staging/media/imx/Kconfig
+@@ -3,6 +3,7 @@ config VIDEO_IMX_MEDIA
+ 	depends on ARCH_MXC || COMPILE_TEST
+ 	depends on MEDIA_CONTROLLER && VIDEO_V4L2 && IMX_IPUV3_CORE
+ 	depends on VIDEO_V4L2_SUBDEV_API
++	depends on HAS_DMA
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select V4L2_FWNODE
+ 	---help---
+-- 
+2.16.3
+

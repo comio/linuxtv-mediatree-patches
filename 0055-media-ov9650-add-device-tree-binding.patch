@@ -1,0 +1,81 @@
+From bbbedadcabd3997366c0a669a241172987561448 Mon Sep 17 00:00:00 2001
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Date: Sun, 21 Jan 2018 10:14:16 -0500
+Subject: [PATCH 055/437] media: ov9650: add device tree binding
+
+Now the ov9650 driver supports device tree probing.  So this adds a
+device tree binding documentation.
+
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Jacopo Mondi <jacopo@jmondi.org>
+Cc: H. Nikolaus Schaller <hns@goldelico.com>
+Cc: Hugues Fruchet <hugues.fruchet@st.com>
+Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Reviewed-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ .../devicetree/bindings/media/i2c/ov9650.txt       | 36 ++++++++++++++++++++++
+ MAINTAINERS                                        |  1 +
+ 2 files changed, 37 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/ov9650.txt
+
+diff --git a/Documentation/devicetree/bindings/media/i2c/ov9650.txt b/Documentation/devicetree/bindings/media/i2c/ov9650.txt
+new file mode 100644
+index 000000000000..506dfc52872a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/ov9650.txt
+@@ -0,0 +1,36 @@
++* Omnivision OV9650/OV9652 CMOS sensor
++
++Required Properties:
++- compatible: shall be one of
++	"ovti,ov9650"
++	"ovti,ov9652"
++- clocks: reference to the xvclk input clock.
++
++Optional Properties:
++- reset-gpios: reference to the GPIO connected to the resetb pin, if any.
++  Active is high.
++- powerdown-gpios: reference to the GPIO connected to the pwdn pin, if any.
++  Active is high.
++
++The device node shall contain one 'port' child node with one child 'endpoint'
++subnode for its digital output video port, in accordance with the video
++interface bindings defined in Documentation/devicetree/bindings/media/
++video-interfaces.txt.
++
++Example:
++
++&i2c0 {
++	ov9650: camera@30 {
++		compatible = "ovti,ov9650";
++		reg = <0x30>;
++		reset-gpios = <&axi_gpio_0 0 GPIO_ACTIVE_HIGH>;
++		powerdown-gpios = <&axi_gpio_0 1 GPIO_ACTIVE_HIGH>;
++		clocks = <&xclk>;
++
++		port {
++			ov9650_0: endpoint {
++				remote-endpoint = <&vcap1_in0>;
++			};
++		};
++	};
++};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2e03b083444c..e00ffb45db24 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10237,6 +10237,7 @@ L:	linux-media@vger.kernel.org
+ T:	git git://linuxtv.org/media_tree.git
+ S:	Maintained
+ F:	drivers/media/i2c/ov9650.c
++F:	Documentation/devicetree/bindings/media/i2c/ov9650.txt
+ 
+ ONENAND FLASH DRIVER
+ M:	Kyungmin Park <kyungmin.park@samsung.com>
+-- 
+2.16.3
+

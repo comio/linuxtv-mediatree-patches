@@ -1,0 +1,52 @@
+From 9de3deaa8bd8a5734c267585c660070329f15e58 Mon Sep 17 00:00:00 2001
+From: Yong Zhi <yong.zhi@intel.com>
+Date: Thu, 8 Feb 2018 19:14:24 -0500
+Subject: [PATCH 043/437] media: intel-ipu3: cio2: Disable and sync irq before
+ stream off
+
+This is to avoid pending interrupts to be handled during
+stream off, in which case, the ready buffer will be removed
+from buffer list, thus not all buffers can be returned to VB2
+as expected. Disable CIO2 irq at cio2_hw_exit() so no new
+interrupts are generated.
+
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Signed-off-by: Tianshu Qiu <tian.shu.qiu@intel.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/pci/intel/ipu3/ipu3-cio2.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.c b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
+index 6c4444b31f4b..b6b0cfe00ef5 100644
+--- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
++++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
+@@ -526,6 +526,8 @@ static void cio2_hw_exit(struct cio2_device *cio2, struct cio2_queue *q)
+ 	unsigned int i, maxloops = 1000;
+ 
+ 	/* Disable CSI receiver and MIPI backend devices */
++	writel(0, q->csi_rx_base + CIO2_REG_IRQCTRL_MASK);
++	writel(0, q->csi_rx_base + CIO2_REG_IRQCTRL_ENABLE);
+ 	writel(0, q->csi_rx_base + CIO2_REG_CSIRX_ENABLE);
+ 	writel(0, q->csi_rx_base + CIO2_REG_MIPIBE_ENABLE);
+ 
+@@ -1035,6 +1037,7 @@ static void cio2_vb2_stop_streaming(struct vb2_queue *vq)
+ 			"failed to stop sensor streaming\n");
+ 
+ 	cio2_hw_exit(cio2, q);
++	synchronize_irq(cio2->pci_dev->irq);
+ 	cio2_vb2_return_all_buffers(q, VB2_BUF_STATE_ERROR);
+ 	media_pipeline_stop(&q->vdev.entity);
+ 	pm_runtime_put(&cio2->pci_dev->dev);
+@@ -1976,6 +1979,7 @@ static int __maybe_unused cio2_suspend(struct device *dev)
+ 
+ 	/* Stop stream */
+ 	cio2_hw_exit(cio2, q);
++	synchronize_irq(pci_dev->irq);
+ 
+ 	pm_runtime_force_suspend(dev);
+ 
+-- 
+2.16.3
+

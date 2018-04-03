@@ -1,0 +1,44 @@
+From 55a264b7324ab507cf9e6c5fa5b68f3435297a3d Mon Sep 17 00:00:00 2001
+From: Antonio Cardace <anto.cardace@gmail.com>
+Date: Fri, 9 Feb 2018 09:13:26 -0500
+Subject: [PATCH 101/437] media: em28xx: use %*phC to print small buffers
+
+Use %*phC format to print small buffers as hex strings
+
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Antonio Cardace <anto.cardace@gmail.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/usb/em28xx/em28xx-i2c.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/usb/em28xx/em28xx-i2c.c b/drivers/media/usb/em28xx/em28xx-i2c.c
+index 9bf49d666e5a..9ad958004990 100644
+--- a/drivers/media/usb/em28xx/em28xx-i2c.c
++++ b/drivers/media/usb/em28xx/em28xx-i2c.c
+@@ -710,8 +710,8 @@ static int em28xx_i2c_eeprom(struct em28xx *dev, unsigned bus,
+ 		mc_start = (data[1] << 8) + 4;	/* usually 0x0004 */
+ 
+ 		dev_info(&dev->intf->dev,
+-			 "EEPROM ID = %02x %02x %02x %02x, EEPROM hash = 0x%08lx\n",
+-			 data[0], data[1], data[2], data[3], dev->hash);
++			 "EEPROM ID = %4ph, EEPROM hash = 0x%08lx\n",
++			 data, dev->hash);
+ 		dev_info(&dev->intf->dev,
+ 			 "EEPROM info:\n");
+ 		dev_info(&dev->intf->dev,
+@@ -776,8 +776,8 @@ static int em28xx_i2c_eeprom(struct em28xx *dev, unsigned bus,
+ 		   data[2] == 0x67 && data[3] == 0x95) {
+ 		dev->hash = em28xx_hash_mem(data, len, 32);
+ 		dev_info(&dev->intf->dev,
+-			 "EEPROM ID = %02x %02x %02x %02x, EEPROM hash = 0x%08lx\n",
+-			 data[0], data[1], data[2], data[3], dev->hash);
++			 "EEPROM ID = %4ph, EEPROM hash = 0x%08lx\n",
++			 data, dev->hash);
+ 		dev_info(&dev->intf->dev,
+ 			 "EEPROM info:\n");
+ 	} else {
+-- 
+2.16.3
+

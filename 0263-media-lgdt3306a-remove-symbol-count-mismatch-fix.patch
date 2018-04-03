@@ -1,0 +1,55 @@
+From 0371577a3c2c182679178cb65d59ba6e5feb38ca Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Tue, 6 Mar 2018 14:14:55 -0500
+Subject: [PATCH 263/437] media: lgdt3306a: remove symbol count mismatch fix
+
+This symbol mismatch is handled by NULL'ing out the release
+callback if the driver is loaded as an i2c device.
+
+This patch reverts:
+- commit 94448e21cf08 ("media: lgdt3306a: Fix a double kfree on i2c
+  device remove")
+- commit 835d66173a38 ("media: lgdt3306a: Fix module count mismatch
+  on usb unplug")
+
+The symbol count mismatch is handled by:
+- commit 5b3a8e906973 ("media: lgdt3306a: Set fe ops.release to
+  NULL if probed")
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/dvb-frontends/lgdt3306a.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
+index 5b1903358730..7eb4e1469d20 100644
+--- a/drivers/media/dvb-frontends/lgdt3306a.c
++++ b/drivers/media/dvb-frontends/lgdt3306a.c
+@@ -1814,13 +1814,7 @@ static void lgdt3306a_release(struct dvb_frontend *fe)
+ 	struct lgdt3306a_state *state = fe->demodulator_priv;
+ 
+ 	dbg_info("\n");
+-
+-	/*
+-	 * If state->muxc is not NULL, then we are an i2c device
+-	 * and lgdt3306a_remove will clean up state
+-	 */
+-	if (!state->muxc)
+-		kfree(state);
++	kfree(state);
+ }
+ 
+ static const struct dvb_frontend_ops lgdt3306a_ops;
+@@ -2221,7 +2215,7 @@ static int lgdt3306a_probe(struct i2c_client *client,
+ 			sizeof(struct lgdt3306a_config));
+ 
+ 	config->i2c_addr = client->addr;
+-	fe = dvb_attach(lgdt3306a_attach, config, client->adapter);
++	fe = lgdt3306a_attach(config, client->adapter);
+ 	if (fe == NULL) {
+ 		ret = -ENODEV;
+ 		goto err_fe;
+-- 
+2.16.3
+

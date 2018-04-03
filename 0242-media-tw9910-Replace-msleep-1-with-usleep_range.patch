@@ -1,0 +1,32 @@
+From 7a08f18ae802a15a7222f5a4f56bfb5488a02964 Mon Sep 17 00:00:00 2001
+From: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Date: Fri, 2 Mar 2018 09:46:37 -0500
+Subject: [PATCH 242/437] media: tw9910: Replace msleep(1) with usleep_range
+
+msleep() can sleep up to 20ms.
+
+As suggested by Documentation/timers/timers_howto.txt replace it with
+usleep_range() with up to 5ms delay.
+
+Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/tw9910.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/tw9910.c b/drivers/media/i2c/tw9910.c
+index 1fbed4432e36..a54548cc4285 100644
+--- a/drivers/media/i2c/tw9910.c
++++ b/drivers/media/i2c/tw9910.c
+@@ -401,7 +401,7 @@ static int tw9910_set_hsync(struct i2c_client *client)
+ static void tw9910_reset(struct i2c_client *client)
+ {
+ 	tw9910_mask_set(client, ACNTL1, SRESET, SRESET);
+-	msleep(1);
++	usleep_range(1000, 5000);
+ }
+ 
+ static int tw9910_power(struct i2c_client *client, int enable)
+-- 
+2.16.3
+

@@ -1,0 +1,41 @@
+From 2020a227c34eaa5112b81e48c26941fff1bb536c Mon Sep 17 00:00:00 2001
+From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Date: Sun, 3 Dec 2017 05:06:57 -0500
+Subject: [PATCH 136/437] media: v4l: vsp1: Fix display stalls when requesting
+ too many inputs
+
+Make sure we don't accept more inputs than the hardware can handle. This
+is a temporary fix to avoid display stall, we need to instead allocate
+the BRU or BRS to display pipelines dynamically based on the number of
+planes they each use.
+
+Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/vsp1/vsp1_drm.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/media/platform/vsp1/vsp1_drm.c b/drivers/media/platform/vsp1/vsp1_drm.c
+index 7ce69f23f50a..ac85942162c1 100644
+--- a/drivers/media/platform/vsp1/vsp1_drm.c
++++ b/drivers/media/platform/vsp1/vsp1_drm.c
+@@ -530,6 +530,15 @@ void vsp1_du_atomic_flush(struct device *dev, unsigned int pipe_index)
+ 		struct vsp1_rwpf *rpf = vsp1->rpf[i];
+ 		unsigned int j;
+ 
++		/*
++		 * Make sure we don't accept more inputs than the hardware can
++		 * handle. This is a temporary fix to avoid display stall, we
++		 * need to instead allocate the BRU or BRS to display pipelines
++		 * dynamically based on the number of planes they each use.
++		 */
++		if (pipe->num_inputs >= pipe->bru->source_pad)
++			pipe->inputs[i] = NULL;
++
+ 		if (!pipe->inputs[i])
+ 			continue;
+ 
+-- 
+2.16.3
+

@@ -1,0 +1,29 @@
+From fde5e437688b8a7588bec97f23e898d461da095f Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Date: Tue, 13 Mar 2018 14:34:12 -0400
+Subject: [PATCH 375/437] media: pixfmt-v4l2.rst: fix broken enum :c:type
+
+:c:type:: -> :c:type:
+
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ Documentation/media/uapi/v4l/pixfmt-v4l2.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/media/uapi/v4l/pixfmt-v4l2.rst b/Documentation/media/uapi/v4l/pixfmt-v4l2.rst
+index 2ee164c25637..6622938c1b41 100644
+--- a/Documentation/media/uapi/v4l/pixfmt-v4l2.rst
++++ b/Documentation/media/uapi/v4l/pixfmt-v4l2.rst
+@@ -40,7 +40,7 @@ Single-planar format structure
+ 	RGB formats in :ref:`rgb-formats`, YUV formats in
+ 	:ref:`yuv-formats`, and reserved codes in
+ 	:ref:`reserved-formats`
+-    * - enum :c:type::`v4l2_field`
++    * - enum :c:type:`v4l2_field`
+       - ``field``
+       - Video images are typically interlaced. Applications can request to
+ 	capture or output only the top or bottom field, or both fields
+-- 
+2.16.3
+

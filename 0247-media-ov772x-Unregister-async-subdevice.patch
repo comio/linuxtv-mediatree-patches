@@ -1,0 +1,31 @@
+From 400aa51f97829acbdf145f927322b8af065e8148 Mon Sep 17 00:00:00 2001
+From: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Date: Fri, 2 Mar 2018 09:46:43 -0500
+Subject: [PATCH 247/437] media: ov772x: Unregister async subdevice
+
+As the media subdevice is registered with 'v4l2_async_register_subdev()'
+unregister it at module removal time with
+'v4l2_async_unregister_subdev()'
+
+Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/ov772x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+index 7fdf54e57ce0..b62860c89439 100644
+--- a/drivers/media/i2c/ov772x.c
++++ b/drivers/media/i2c/ov772x.c
+@@ -1328,7 +1328,7 @@ static int ov772x_remove(struct i2c_client *client)
+ 	clk_put(priv->clk);
+ 	if (priv->pwdn_gpio)
+ 		gpiod_put(priv->pwdn_gpio);
+-	v4l2_device_unregister_subdev(&priv->subdev);
++	v4l2_async_unregister_subdev(&priv->subdev);
+ 	v4l2_ctrl_handler_free(&priv->hdl);
+ 
+ 	return 0;
+-- 
+2.16.3
+

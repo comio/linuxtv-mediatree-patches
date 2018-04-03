@@ -1,0 +1,49 @@
+From 2ff7009eec80b82c72ff3bbf5ef8aa9b58d3ceef Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 26 Feb 2018 09:18:03 -0500
+Subject: [PATCH 154/437] media: ov5695: mark PM functions as __maybe_unused
+
+Without CONFIG_PM, we get a harmless build warning:
+
+drivers/media/i2c/ov5695.c:1033:12: error: 'ov5695_runtime_suspend' defined but not used [-Werror=unused-function]
+ static int ov5695_runtime_suspend(struct device *dev)
+            ^~~~~~~~~~~~~~~~~~~~~~
+drivers/media/i2c/ov5695.c:1024:12: error: 'ov5695_runtime_resume' defined but not used [-Werror=unused-function]
+ static int ov5695_runtime_resume(struct device *dev)
+
+This marks the affected functions as __maybe_unused.
+
+Fixes: 8a77009be4be ("media: ov5695: add support for OV5695 sensor")
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/ov5695.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/i2c/ov5695.c b/drivers/media/i2c/ov5695.c
+index 2db7d2e535b9..a4985a4715f5 100644
+--- a/drivers/media/i2c/ov5695.c
++++ b/drivers/media/i2c/ov5695.c
+@@ -1021,7 +1021,7 @@ static void __ov5695_power_off(struct ov5695 *ov5695)
+ 	regulator_bulk_disable(OV5695_NUM_SUPPLIES, ov5695->supplies);
+ }
+ 
+-static int ov5695_runtime_resume(struct device *dev)
++static int __maybe_unused ov5695_runtime_resume(struct device *dev)
+ {
+ 	struct i2c_client *client = to_i2c_client(dev);
+ 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+@@ -1030,7 +1030,7 @@ static int ov5695_runtime_resume(struct device *dev)
+ 	return __ov5695_power_on(ov5695);
+ }
+ 
+-static int ov5695_runtime_suspend(struct device *dev)
++static int __maybe_unused ov5695_runtime_suspend(struct device *dev)
+ {
+ 	struct i2c_client *client = to_i2c_client(dev);
+ 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+-- 
+2.16.3
+

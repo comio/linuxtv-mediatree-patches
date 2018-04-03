@@ -1,0 +1,33 @@
+From 401a6455d88ba575d2178241acfe554ffe785403 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Thu, 22 Mar 2018 09:01:11 -0400
+Subject: [PATCH 405/437] media: dvbdev: handle ENOMEM error at
+ dvb_module_probe()
+
+If allocation of struct board_info fails, return NULL from
+dvb_module_probe().
+
+Fix this warning:
+	drivers/media/dvb-core/dvbdev.c:958 dvb_module_probe() error: potential null dereference 'board_info'.  (kzalloc returns null)
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/dvb-core/dvbdev.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
+index cf747d753a79..787fe06df217 100644
+--- a/drivers/media/dvb-core/dvbdev.c
++++ b/drivers/media/dvb-core/dvbdev.c
+@@ -953,6 +953,8 @@ struct i2c_client *dvb_module_probe(const char *module_name,
+ 	struct i2c_board_info *board_info;
+ 
+ 	board_info = kzalloc(sizeof(*board_info), GFP_KERNEL);
++	if (!board_info)
++		return NULL;
+ 
+ 	if (name)
+ 		strlcpy(board_info->type, name, I2C_NAME_SIZE);
+-- 
+2.16.3
+
