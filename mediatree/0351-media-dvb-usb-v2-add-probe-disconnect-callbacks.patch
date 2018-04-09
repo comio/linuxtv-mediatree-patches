@@ -1,0 +1,108 @@
+From 0e81a40ca14516ca93e7137a525bc5fd51eed7e0 Mon Sep 17 00:00:00 2001
+From: Antti Palosaari <crope@iki.fi>
+Date: Mon, 10 Jul 2017 15:35:59 -0400
+Subject: [PATCH 351/437] media: dvb-usb-v2: add probe/disconnect callbacks
+
+Add probe and disconnect callbacks that behaves similarly than ones
+used commonly on Linux driver model. We need those to get early / late
+access to driver in order to use normal probe time stuff, like regmap,
+extra bus adapters and so.
+
+Signed-off-by: Antti Palosaari <crope@iki.fi>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/usb/dvb-usb-v2/dvb_usb.h      |  4 ++++
+ drivers/media/usb/dvb-usb-v2/dvb_usb_core.c | 24 +++++++++++++++++----
+ 2 files changed, 24 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/usb/dvb-usb-v2/dvb_usb.h b/drivers/media/usb/dvb-usb-v2/dvb_usb.h
+index d2e80537b2f7..3fd6cc0d6340 100644
+--- a/drivers/media/usb/dvb-usb-v2/dvb_usb.h
++++ b/drivers/media/usb/dvb-usb-v2/dvb_usb.h
+@@ -203,6 +203,8 @@ struct dvb_usb_adapter_properties {
+  * @generic_bulk_ctrl_endpoint_response: bulk control endpoint number for
+  *  receive
+  * @generic_bulk_ctrl_delay: delay between bulk control sent and receive message
++ * @probe: like probe on driver model
++ * @disconnect: like disconnect on driver model
+  * @identify_state: called to determine the firmware state (cold or warm) and
+  *  return possible firmware file name to be loaded
+  * @firmware: name of the firmware file to be loaded
+@@ -239,6 +241,8 @@ struct dvb_usb_device_properties {
+ 	u8 generic_bulk_ctrl_endpoint_response;
+ 	unsigned int generic_bulk_ctrl_delay;
+ 
++	int (*probe)(struct dvb_usb_device *);
++	void (*disconnect)(struct dvb_usb_device *);
+ #define WARM                  0
+ #define COLD                  1
+ 	int (*identify_state) (struct dvb_usb_device *, const char **);
+diff --git a/drivers/media/usb/dvb-usb-v2/dvb_usb_core.c b/drivers/media/usb/dvb-usb-v2/dvb_usb_core.c
+index 2bf3bd81280a..afdcdbf005e9 100644
+--- a/drivers/media/usb/dvb-usb-v2/dvb_usb_core.c
++++ b/drivers/media/usb/dvb-usb-v2/dvb_usb_core.c
+@@ -854,8 +854,6 @@ static int dvb_usbv2_exit(struct dvb_usb_device *d)
+ 	dvb_usbv2_remote_exit(d);
+ 	dvb_usbv2_adapter_exit(d);
+ 	dvb_usbv2_i2c_exit(d);
+-	kfree(d->priv);
+-	kfree(d);
+ 
+ 	return 0;
+ }
+@@ -934,7 +932,7 @@ int dvb_usbv2_probe(struct usb_interface *intf,
+ 	if (intf->cur_altsetting->desc.bInterfaceNumber !=
+ 			d->props->bInterfaceNumber) {
+ 		ret = -ENODEV;
+-		goto err_free_all;
++		goto err_kfree_d;
+ 	}
+ 
+ 	mutex_init(&d->usb_mutex);
+@@ -946,10 +944,16 @@ int dvb_usbv2_probe(struct usb_interface *intf,
+ 			dev_err(&d->udev->dev, "%s: kzalloc() failed\n",
+ 					KBUILD_MODNAME);
+ 			ret = -ENOMEM;
+-			goto err_free_all;
++			goto err_kfree_d;
+ 		}
+ 	}
+ 
++	if (d->props->probe) {
++		ret = d->props->probe(d);
++		if (ret)
++			goto err_kfree_priv;
++	}
++
+ 	if (d->props->identify_state) {
+ 		const char *name = NULL;
+ 		ret = d->props->identify_state(d, &name);
+@@ -1001,6 +1005,12 @@ int dvb_usbv2_probe(struct usb_interface *intf,
+ 	return 0;
+ err_free_all:
+ 	dvb_usbv2_exit(d);
++	if (d->props->disconnect)
++		d->props->disconnect(d);
++err_kfree_priv:
++	kfree(d->priv);
++err_kfree_d:
++	kfree(d);
+ err:
+ 	dev_dbg(&udev->dev, "%s: failed=%d\n", __func__, ret);
+ 	return ret;
+@@ -1021,6 +1031,12 @@ void dvb_usbv2_disconnect(struct usb_interface *intf)
+ 
+ 	dvb_usbv2_exit(d);
+ 
++	if (d->props->disconnect)
++		d->props->disconnect(d);
++
++	kfree(d->priv);
++	kfree(d);
++
+ 	pr_info("%s: '%s:%s' successfully deinitialized and disconnected\n",
+ 		KBUILD_MODNAME, drvname, devname);
+ 	kfree(devname);
+-- 
+2.17.0
+

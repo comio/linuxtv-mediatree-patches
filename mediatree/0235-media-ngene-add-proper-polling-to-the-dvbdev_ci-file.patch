@@ -1,0 +1,72 @@
+From 83523aa83fda7e304e73e2308159f0ec522a92c0 Mon Sep 17 00:00:00 2001
+From: Daniel Scheller <d.scheller@gmx.net>
+Date: Sun, 25 Feb 2018 12:06:56 -0500
+Subject: [PATCH 235/437] media: ngene: add proper polling to the dvbdev_ci
+ file ops
+
+Implement the poll callback for the dvbdev_ci file ops. The ts_poll()
+function queries the DVB ring buffers for available data and space, and
+reports this as appropriate. Also, set the dvb_device readers, writers
+and users to proper values (one reader, one writer, two users).
+
+This fixes the raw CI TS transport in conjunction with TVheadend's
+DDCI functionality.
+
+Signed-off-by: Daniel Scheller <d.scheller@gmx.net>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/pci/ngene/ngene-dvb.c | 29 ++++++++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/pci/ngene/ngene-dvb.c b/drivers/media/pci/ngene/ngene-dvb.c
+index f71fd41c762c..65c79f1b36f7 100644
+--- a/drivers/media/pci/ngene/ngene-dvb.c
++++ b/drivers/media/pci/ngene/ngene-dvb.c
+@@ -84,18 +84,41 @@ static ssize_t ts_read(struct file *file, char __user *buf,
+ 	return count;
+ }
+ 
++static __poll_t ts_poll(struct file *file, poll_table *wait)
++{
++	struct dvb_device *dvbdev = file->private_data;
++	struct ngene_channel *chan = dvbdev->priv;
++	struct ngene *dev = chan->dev;
++	struct dvb_ringbuffer *rbuf = &dev->tsin_rbuf;
++	struct dvb_ringbuffer *wbuf = &dev->tsout_rbuf;
++	__poll_t mask = 0;
++
++	poll_wait(file, &rbuf->queue, wait);
++	poll_wait(file, &wbuf->queue, wait);
++
++	if (!dvb_ringbuffer_empty(rbuf))
++		mask |= EPOLLIN | EPOLLRDNORM;
++	if (dvb_ringbuffer_free(wbuf) >= 188)
++		mask |= EPOLLOUT | EPOLLWRNORM;
++
++	return mask;
++}
++
+ static const struct file_operations ci_fops = {
+ 	.owner   = THIS_MODULE,
+ 	.read    = ts_read,
+ 	.write   = ts_write,
+ 	.open    = dvb_generic_open,
+ 	.release = dvb_generic_release,
++	.poll    = ts_poll,
++	.mmap    = NULL,
+ };
+ 
+ struct dvb_device ngene_dvbdev_ci = {
+-	.readers = -1,
+-	.writers = -1,
+-	.users   = -1,
++	.priv    = NULL,
++	.readers = 1,
++	.writers = 1,
++	.users   = 2,
+ 	.fops    = &ci_fops,
+ };
+ 
+-- 
+2.17.0
+

@@ -1,0 +1,132 @@
+From e02b211907adccced47dcfcee15225d01ce9cb57 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Mon, 12 Feb 2018 15:19:04 -0500
+Subject: [PATCH 221/437] media: si2168: change ts bus control logic
+
+Move the ts bus control function moved higher, enabling it
+after configuring frontend and removeing ts_bus_ctrl callback.
+
+While here, also add an error checking and re-add a comment
+that were removed by commit 445877742ce3 ("media: si2168:
+Add ts bus coontrol, turn off bus on sleep").
+
+[mchehab@s-opensource.com: I ended by applying the first version,
+ instead of the right one. So, this patch contains the diff and
+ the v2 changelog instead]
+
+Fixes: 445877742ce3 ("media: si2168: Add ts bus coontrol, turn off bus on sleep")
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/dvb-frontends/si2168.c | 60 +++++++++++++++-------------
+ 1 file changed, 33 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
+index 282dc92cb102..a91947784842 100644
+--- a/drivers/media/dvb-frontends/si2168.c
++++ b/drivers/media/dvb-frontends/si2168.c
+@@ -82,6 +82,30 @@ static int si2168_cmd_execute(struct i2c_client *client, struct si2168_cmd *cmd)
+ 	return ret;
+ }
+ 
++static int si2168_ts_bus_ctrl(struct dvb_frontend *fe, int acquire)
++{
++	struct i2c_client *client = fe->demodulator_priv;
++	struct si2168_dev *dev = i2c_get_clientdata(client);
++	struct si2168_cmd cmd;
++	int ret = 0;
++
++	dev_dbg(&client->dev, "%s acquire: %d\n", __func__, acquire);
++
++	/* set TS_MODE property */
++	memcpy(cmd.args, "\x14\x00\x01\x10\x10\x00", 6);
++	if (acquire)
++		cmd.args[4] |= dev->ts_mode;
++	else
++		cmd.args[4] |= SI2168_TS_TRISTATE;
++	if (dev->ts_clock_gapped)
++		cmd.args[4] |= 0x40;
++	cmd.wlen = 6;
++	cmd.rlen = 4;
++	ret = si2168_cmd_execute(client, &cmd);
++
++	return ret;
++}
++
+ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+ {
+ 	struct i2c_client *client = fe->demodulator_priv;
+@@ -405,36 +429,17 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+ 
+ 	dev->delivery_system = c->delivery_system;
+ 
++	/* enable ts bus */
++	ret = si2168_ts_bus_ctrl(fe, 1);
++	if (ret)
++		goto err;
++
+ 	return 0;
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
+ 	return ret;
+ }
+ 
+-static int si2168_ts_bus_ctrl(struct dvb_frontend *fe, int acquire)
+-{
+-	struct i2c_client *client = fe->demodulator_priv;
+-	struct si2168_dev *dev = i2c_get_clientdata(client);
+-	struct si2168_cmd cmd;
+-	int ret = 0;
+-
+-	dev_dbg(&client->dev, "%s acquire: %d\n", __func__, acquire);
+-
+-	/* set TS_MODE property */
+-	memcpy(cmd.args, "\x14\x00\x01\x10\x10\x00", 6);
+-	if (acquire)
+-		cmd.args[4] |= dev->ts_mode;
+-	else
+-		cmd.args[4] |= SI2168_TS_TRISTATE;
+-	if (dev->ts_clock_gapped)
+-		cmd.args[4] |= 0x40;
+-	cmd.wlen = 6;
+-	cmd.rlen = 4;
+-	ret = si2168_cmd_execute(client, &cmd);
+-
+-	return ret;
+-}
+-
+ static int si2168_init(struct dvb_frontend *fe)
+ {
+ 	struct i2c_client *client = fe->demodulator_priv;
+@@ -566,6 +571,7 @@ static int si2168_init(struct dvb_frontend *fe)
+ 		 dev->version >> 24 & 0xff, dev->version >> 16 & 0xff,
+ 		 dev->version >> 8 & 0xff, dev->version >> 0 & 0xff);
+ 
++	/* set ts mode */
+ 	ret = si2168_ts_bus_ctrl(fe, 1);
+ 	if (ret)
+ 		goto err;
+@@ -604,7 +610,9 @@ static int si2168_sleep(struct dvb_frontend *fe)
+ 	dev->active = false;
+ 
+ 	/* tri-state data bus */
+-	si2168_ts_bus_ctrl(fe, 0);
++	ret = si2168_ts_bus_ctrl(fe, 0);
++	if (ret)
++		goto err;
+ 
+ 	/* Firmware B 4.0-11 or later loses warm state during sleep */
+ 	if (dev->version > ('B' << 24 | 4 << 16 | 0 << 8 | 11 << 0))
+@@ -703,8 +711,6 @@ static const struct dvb_frontend_ops si2168_ops = {
+ 	.init = si2168_init,
+ 	.sleep = si2168_sleep,
+ 
+-	.ts_bus_ctrl          = si2168_ts_bus_ctrl,
+-
+ 	.set_frontend = si2168_set_frontend,
+ 
+ 	.read_status = si2168_read_status,
+-- 
+2.17.0
+

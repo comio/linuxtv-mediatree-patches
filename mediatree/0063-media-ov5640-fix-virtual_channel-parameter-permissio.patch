@@ -1,0 +1,57 @@
+From 7900d40640bc1995289216dd9695028db45ce0b7 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@st.com>
+Date: Tue, 6 Feb 2018 08:24:09 -0500
+Subject: [PATCH 063/437] media: ov5640: fix virtual_channel parameter
+ permissions
+
+Fix module_param(virtual_channel) permissions.
+This problem was detected by checkpatch:
+$ scripts/checkpatch.pl -f drivers/media/i2c/ov5640.c
+ERROR: Use 4 digit octal (0777) not decimal permissions
++module_param(virtual_channel, int, 0);
+
+Also add an error trace in case of virtual_channel not in
+the valid range of values.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
+Reviewed-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/ov5640.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
+index 696a28bde1b4..3e7b43ce2b7a 100644
+--- a/drivers/media/i2c/ov5640.c
++++ b/drivers/media/i2c/ov5640.c
+@@ -128,7 +128,7 @@ static const struct ov5640_pixfmt ov5640_formats[] = {
+  * to set the MIPI CSI-2 virtual channel.
+  */
+ static unsigned int virtual_channel;
+-module_param(virtual_channel, int, 0);
++module_param(virtual_channel, uint, 0444);
+ MODULE_PARM_DESC(virtual_channel,
+ 		 "MIPI CSI-2 virtual channel (0..3), default 0");
+ 
+@@ -1358,11 +1358,16 @@ static int ov5640_binning_on(struct ov5640_dev *sensor)
+ 
+ static int ov5640_set_virtual_channel(struct ov5640_dev *sensor)
+ {
++	struct i2c_client *client = sensor->i2c_client;
+ 	u8 temp, channel = virtual_channel;
+ 	int ret;
+ 
+-	if (channel > 3)
++	if (channel > 3) {
++		dev_err(&client->dev,
++			"%s: wrong virtual_channel parameter, expected (0..3), got %d\n",
++			__func__, channel);
+ 		return -EINVAL;
++	}
+ 
+ 	ret = ov5640_read_reg(sensor, OV5640_REG_DEBUG_MODE, &temp);
+ 	if (ret)
+-- 
+2.17.0
+

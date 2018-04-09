@@ -1,0 +1,35 @@
+From 13c0d03197a9a4fe675a77395fb5f5ced629641d Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Fri, 22 Dec 2017 20:57:04 -0500
+Subject: [PATCH 070/437] media: atmel-isc: Make local symbol fmt_configs_list
+ static
+
+Fixes the following sparse warning:
+
+drivers/media/platform/atmel/atmel-isc.c:338:19: warning:
+ symbol 'fmt_configs_list' was not declared. Should it be static?
+
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Acked-by: Wenyou Yang <wenyou.yang@microchip.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/atmel/atmel-isc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/atmel/atmel-isc.c b/drivers/media/platform/atmel/atmel-isc.c
+index 92d695b29fa9..d89e14524d42 100644
+--- a/drivers/media/platform/atmel/atmel-isc.c
++++ b/drivers/media/platform/atmel/atmel-isc.c
+@@ -335,7 +335,7 @@ static struct isc_format formats_list[] = {
+ 	},
+ };
+ 
+-struct fmt_config fmt_configs_list[] = {
++static struct fmt_config fmt_configs_list[] = {
+ 	{
+ 		.fourcc		= V4L2_PIX_FMT_SBGGR8,
+ 		.pfe_cfg0_bps	= ISC_PFE_CFG0_BPS_EIGHT,
+-- 
+2.17.0
+

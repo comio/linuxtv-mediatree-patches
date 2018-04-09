@@ -1,0 +1,32 @@
+From eea9da1d00850196b0408de489744e96daf2231b Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Tue, 23 Jan 2018 12:49:29 -0500
+Subject: [PATCH 053/437] media: ov13858: Use false for boolean value
+
+Assign true or false to boolean variables instead of an integer value.
+
+This issue was detected with the help of Coccinelle.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/ov13858.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/ov13858.c b/drivers/media/i2c/ov13858.c
+index 2964d5cae1fb..1f260d346a29 100644
+--- a/drivers/media/i2c/ov13858.c
++++ b/drivers/media/i2c/ov13858.c
+@@ -1569,7 +1569,7 @@ static int __maybe_unused ov13858_resume(struct device *dev)
+ 
+ error:
+ 	ov13858_stop_streaming(ov13858);
+-	ov13858->streaming = 0;
++	ov13858->streaming = false;
+ 	return ret;
+ }
+ 
+-- 
+2.17.0
+

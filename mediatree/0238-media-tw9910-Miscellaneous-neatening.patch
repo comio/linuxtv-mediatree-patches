@@ -1,0 +1,112 @@
+From bca302488f2c27a1f5d3617b0d0a704d094a0467 Mon Sep 17 00:00:00 2001
+From: Joe Perches <joe@perches.com>
+Date: Thu, 1 Mar 2018 07:01:22 -0500
+Subject: [PATCH 238/437] media: tw9910: Miscellaneous neatening
+
+Yet more whitespace and style neatening
+
+o Add blank lines before returns
+o Reverse a logic test and return early on error
+o Move formats to same line as dev_<level> calls
+o Remove an unnecessary period from a logging message
+
+Signed-off-by: Joe Perches <joe@perches.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/tw9910.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/media/i2c/tw9910.c b/drivers/media/i2c/tw9910.c
+index ceaad7dd05c2..2d5cdb944330 100644
+--- a/drivers/media/i2c/tw9910.c
++++ b/drivers/media/i2c/tw9910.c
+@@ -740,6 +740,7 @@ static int tw9910_get_selection(struct v4l2_subdev *sd,
+ 		sel->r.width	= 768;
+ 		sel->r.height	= 576;
+ 	}
++
+ 	return 0;
+ }
+ 
+@@ -785,11 +786,13 @@ static int tw9910_s_fmt(struct v4l2_subdev *sd,
+ 	mf->colorspace = V4L2_COLORSPACE_SMPTE170M;
+ 
+ 	ret = tw9910_set_frame(sd, &width, &height);
+-	if (!ret) {
+-		mf->width	= width;
+-		mf->height	= height;
+-	}
+-	return ret;
++	if (ret)
++		return ret;
++
++	mf->width	= width;
++	mf->height	= height;
++
++	return 0;
+ }
+ 
+ static int tw9910_set_fmt(struct v4l2_subdev *sd,
+@@ -807,7 +810,7 @@ static int tw9910_set_fmt(struct v4l2_subdev *sd,
+ 	if (mf->field == V4L2_FIELD_ANY) {
+ 		mf->field = V4L2_FIELD_INTERLACED_BT;
+ 	} else if (mf->field != V4L2_FIELD_INTERLACED_BT) {
+-		dev_err(&client->dev, "Field type %d invalid.\n", mf->field);
++		dev_err(&client->dev, "Field type %d invalid\n", mf->field);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -824,7 +827,9 @@ static int tw9910_set_fmt(struct v4l2_subdev *sd,
+ 
+ 	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE)
+ 		return tw9910_s_fmt(sd, mf);
++
+ 	cfg->try_fmt = *mf;
++
+ 	return 0;
+ }
+ 
+@@ -853,21 +858,21 @@ static int tw9910_video_probe(struct i2c_client *client)
+ 	id = GET_ID(id);
+ 
+ 	if (id != 0x0b || priv->revision > 0x01) {
+-		dev_err(&client->dev,
+-			"Product ID error %x:%x\n",
++		dev_err(&client->dev, "Product ID error %x:%x\n",
+ 			id, priv->revision);
+ 		ret = -ENODEV;
+ 		goto done;
+ 	}
+ 
+-	dev_info(&client->dev,
+-		 "tw9910 Product ID %0x:%0x\n", id, priv->revision);
++	dev_info(&client->dev, "tw9910 Product ID %0x:%0x\n",
++		 id, priv->revision);
+ 
+ 	priv->norm = V4L2_STD_NTSC;
+ 	priv->scale = &tw9910_ntsc_scales[0];
+ 
+ done:
+ 	tw9910_s_power(&priv->subdev, 0);
++
+ 	return ret;
+ }
+ 
+@@ -887,12 +892,14 @@ static int tw9910_enum_mbus_code(struct v4l2_subdev *sd,
+ 		return -EINVAL;
+ 
+ 	code->code = MEDIA_BUS_FMT_UYVY8_2X8;
++
+ 	return 0;
+ }
+ 
+ static int tw9910_g_tvnorms(struct v4l2_subdev *sd, v4l2_std_id *norm)
+ {
+ 	*norm = V4L2_STD_NTSC | V4L2_STD_PAL;
++
+ 	return 0;
+ }
+ 
+-- 
+2.17.0
+

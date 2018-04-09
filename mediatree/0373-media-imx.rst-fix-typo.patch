@@ -1,0 +1,31 @@
+From d75bceb9108ebbbbcae9c1cff582710818b7e56d Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Date: Tue, 13 Mar 2018 14:29:36 -0400
+Subject: [PATCH 373/437] media: imx.rst: fix typo
+
+Multpiple -> Multiple
+
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Acked-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ Documentation/media/v4l-drivers/imx.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/media/v4l-drivers/imx.rst b/Documentation/media/v4l-drivers/imx.rst
+index 18e3141304bb..65d3d15eb159 100644
+--- a/Documentation/media/v4l-drivers/imx.rst
++++ b/Documentation/media/v4l-drivers/imx.rst
+@@ -109,7 +109,7 @@ imx6-mipi-csi2
+ This is the MIPI CSI-2 receiver entity. It has one sink pad to receive
+ the MIPI CSI-2 stream (usually from a MIPI CSI-2 camera sensor). It has
+ four source pads, corresponding to the four MIPI CSI-2 demuxed virtual
+-channel outputs. Multpiple source pads can be enabled to independently
++channel outputs. Multiple source pads can be enabled to independently
+ stream from multiple virtual channels.
+ 
+ This entity actually consists of two sub-blocks. One is the MIPI CSI-2
+-- 
+2.17.0
+

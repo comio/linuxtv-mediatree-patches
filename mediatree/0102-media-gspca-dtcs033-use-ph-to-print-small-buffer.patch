@@ -1,0 +1,40 @@
+From 9f42703e123b18964393568edc8e5eab3caf53cf Mon Sep 17 00:00:00 2001
+From: Antonio Cardace <anto.cardace@gmail.com>
+Date: Mon, 12 Feb 2018 13:35:25 -0500
+Subject: [PATCH 102/437] media: gspca: dtcs033: use %*ph to print small buffer
+
+Use %*ph format to print small buffer as hex string.
+
+Remove newline at the end of the format string as it would be duplicated
+by the one supplied as last argument.
+
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Antonio Cardace <anto.cardace@gmail.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/usb/gspca/dtcs033.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/usb/gspca/dtcs033.c b/drivers/media/usb/gspca/dtcs033.c
+index cdf27cf0112a..7654c8c08eda 100644
+--- a/drivers/media/usb/gspca/dtcs033.c
++++ b/drivers/media/usb/gspca/dtcs033.c
+@@ -76,12 +76,10 @@ static int reg_reqs(struct gspca_dev *gspca_dev,
+ 		} else if (preq->bRequestType & USB_DIR_IN) {
+ 
+ 			gspca_dbg(gspca_dev, D_STREAM,
+-				  "USB IN (%d) returned[%d] %02X %02X %02X %s\n",
++				  "USB IN (%d) returned[%d] %3ph %s",
+ 				  i,
+ 				  preq->wLength,
+-				  gspca_dev->usb_buf[0],
+-				  gspca_dev->usb_buf[1],
+-				  gspca_dev->usb_buf[2],
++				  gspca_dev->usb_buf,
+ 				  preq->wLength > 3 ? "...\n" : "\n");
+ 		}
+ 
+-- 
+2.17.0
+

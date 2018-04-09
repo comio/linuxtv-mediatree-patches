@@ -1,0 +1,31 @@
+From 071acd897039e83cc14fda707d9c4d250e51322f Mon Sep 17 00:00:00 2001
+From: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Date: Tue, 27 Feb 2018 12:32:52 -0500
+Subject: [PATCH 251/437] media: platform: renesas-ceu: Fix CSTRST_CPON mask
+
+The CSTRST_CPON mask was wrongly assigned to BIT(1) instead of BIT(0).
+Fix that by changing the mask opportunely.
+
+Reported-by: Dylan Laduranty <dylan.laduranty@mesotic.com>
+Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/renesas-ceu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/renesas-ceu.c b/drivers/media/platform/renesas-ceu.c
+index bd64cad542df..903c05c67d91 100644
+--- a/drivers/media/platform/renesas-ceu.c
++++ b/drivers/media/platform/renesas-ceu.c
+@@ -95,7 +95,7 @@
+ 
+ /* CEU operating flag bit. */
+ #define CEU_CAPCR_CTNCP			BIT(16)
+-#define CEU_CSTRST_CPTON		BIT(1)
++#define CEU_CSTRST_CPTON		BIT(0)
+ 
+ /* Platform specific IRQ source flags. */
+ #define CEU_CETCR_ALL_IRQS_RZ		0x397f313
+-- 
+2.17.0
+

@@ -1,0 +1,41 @@
+From b850a9f6b795e7c1a8e9b50a3962bb8bc93af3bd Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Date: Sat, 3 Feb 2018 13:46:05 -0500
+Subject: [PATCH 129/437] media: media-device.c: zero reserved fields
+
+MEDIA_IOC_SETUP_LINK didn't zero the reserved field of the media_link_desc
+struct. Do so in media_device_setup_link().
+
+MEDIA_IOC_ENUM_LINKS didn't zero the reserved field of the media_links_enum
+struct. Do so in media_device_enum_links().
+
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/media-device.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index f44244415124..5d55743f970c 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -190,6 +190,7 @@ static long media_device_enum_links(struct media_device *mdev,
+ 			ulink_desc++;
+ 		}
+ 	}
++	memset(links->reserved, 0, sizeof(links->reserved));
+ 
+ 	return 0;
+ }
+@@ -218,6 +219,8 @@ static long media_device_setup_link(struct media_device *mdev,
+ 	if (link == NULL)
+ 		return -EINVAL;
+ 
++	memset(linkd->reserved, 0, sizeof(linkd->reserved));
++
+ 	/* Setup the link on both entities. */
+ 	return __media_entity_setup_link(link, linkd->flags);
+ }
+-- 
+2.17.0
+

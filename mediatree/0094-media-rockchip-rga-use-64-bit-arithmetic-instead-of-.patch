@@ -1,0 +1,39 @@
+From ad1bbec3ce183f9d97ff357aa84ff6ee01acf8ae Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Tue, 6 Feb 2018 11:51:18 -0500
+Subject: [PATCH 094/437] media: rockchip/rga: use 64-bit arithmetic instead of
+ 32-bit
+
+Cast p to dma_addr_t in order to avoid a potential integer overflow.
+This variable is being used in a context that expects an expression
+of type dma_addr_t (u64).
+
+The expression p << PAGE_SHIFT is currently being evaluated
+using 32-bit arithmetic.
+
+Addresses-Coverity-ID: 1458347 ("Unintentional integer overflow")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/rockchip/rga/rga-buf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/rockchip/rga/rga-buf.c b/drivers/media/platform/rockchip/rga/rga-buf.c
+index 49cacc7a48d1..fa1ba98c96dc 100644
+--- a/drivers/media/platform/rockchip/rga/rga-buf.c
++++ b/drivers/media/platform/rockchip/rga/rga-buf.c
+@@ -140,7 +140,8 @@ void rga_buf_map(struct vb2_buffer *vb)
+ 		address = sg_phys(sgl);
+ 
+ 		for (p = 0; p < len; p++) {
+-			dma_addr_t phys = address + (p << PAGE_SHIFT);
++			dma_addr_t phys = address +
++					  ((dma_addr_t)p << PAGE_SHIFT);
+ 
+ 			pages[mapped_size + p] = phys;
+ 		}
+-- 
+2.17.0
+

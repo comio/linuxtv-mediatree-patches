@@ -1,0 +1,37 @@
+From 973deb7c7d2a87e6a04e6f8330f374924d2cdb5c Mon Sep 17 00:00:00 2001
+From: Tim Harvey <tharvey@gateworks.com>
+Date: Thu, 15 Feb 2018 12:55:32 -0500
+Subject: [PATCH 032/437] media: MAINTAINERS: add entry for NXP TDA1997x driver
+
+Add new MAINTAINERS entry.
+
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+[hans.verkuil@cisco.com: make a proper commit message]
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6e950b8b4a41..14af6e5d6da8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13542,6 +13542,14 @@ T:	git git://linuxtv.org/mkrufky/tuners.git
+ S:	Maintained
+ F:	drivers/media/tuners/tda18271*
+ 
++TDA1997x MEDIA DRIVER
++M:	Tim Harvey <tharvey@gateworks.com>
++L:	linux-media@vger.kernel.org
++W:	https://linuxtv.org
++Q:	http://patchwork.linuxtv.org/project/linux-media/list/
++S:	Maintained
++F:	drivers/media/i2c/tda1997x.*
++
+ TDA827x MEDIA DRIVER
+ M:	Michael Krufky <mkrufky@linuxtv.org>
+ L:	linux-media@vger.kernel.org
+-- 
+2.17.0
+

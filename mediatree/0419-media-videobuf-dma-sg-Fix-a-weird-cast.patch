@@ -1,0 +1,32 @@
+From 14b8fe464e63266442db0a177edae3277b9cd9c7 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Thu, 22 Mar 2018 15:00:32 -0400
+Subject: [PATCH 419/437] media: videobuf-dma-sg: Fix a weird cast
+
+Just use %p. Fixes this warning:
+	drivers/media/v4l2-core/videobuf-dma-sg.c:247 videobuf_dma_init_kernel() warn: argument 2 to %08lx specifier is cast from pointer
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/v4l2-core/videobuf-dma-sg.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
+index f412429cf5ba..add2edb23eac 100644
+--- a/drivers/media/v4l2-core/videobuf-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
+@@ -244,9 +244,8 @@ static int videobuf_dma_init_kernel(struct videobuf_dmabuf *dma, int direction,
+ 		goto out_free_pages;
+ 	}
+ 
+-	dprintk(1, "vmalloc is at addr 0x%08lx, size=%d\n",
+-				(unsigned long)dma->vaddr,
+-				nr_pages << PAGE_SHIFT);
++	dprintk(1, "vmalloc is at addr %p, size=%d\n",
++		dma->vaddr, nr_pages << PAGE_SHIFT);
+ 
+ 	memset(dma->vaddr, 0, nr_pages << PAGE_SHIFT);
+ 	dma->nr_pages = nr_pages;
+-- 
+2.17.0
+

@@ -1,0 +1,31 @@
+From 96dad35de2dc6d225d82c29b1f920ce417e56515 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Tue, 6 Mar 2018 14:14:59 -0500
+Subject: [PATCH 266/437] media: cx231xx: Set mfe_shared if second frontend
+ found
+
+If frontend[1] exists, then enable the dvb adapter mfe lock system.
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/usb/cx231xx/cx231xx-dvb.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/media/usb/cx231xx/cx231xx-dvb.c b/drivers/media/usb/cx231xx/cx231xx-dvb.c
+index 680c175be28d..3a5ed2a8209b 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-dvb.c
++++ b/drivers/media/usb/cx231xx/cx231xx-dvb.c
+@@ -504,6 +504,9 @@ static int register_dvb(struct cx231xx_dvb *dvb,
+ 				dev->name, result);
+ 			goto fail_frontend1;
+ 		}
++
++		/* MFE lock */
++		dvb->adapter.mfe_shared = 1;
+ 	}
+ 
+ 	/* register demux stuff */
+-- 
+2.17.0
+

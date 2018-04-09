@@ -1,0 +1,32 @@
+From e91ca905a5faabbafa46ed6aa8591426b746c0c7 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Wed, 7 Mar 2018 08:57:05 -0500
+Subject: [PATCH 294/437] media: si2168: fix a comment about firmware version
+
+There's a comment there at s82168 that it is wrong.
+
+With firmware 4.0.11, sleep/resume works well without
+need of download it every time. But firmware 4.0.19
+needs to be downloaded again after sleep.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/dvb-frontends/si2168.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
+index a91947784842..324493e05f9f 100644
+--- a/drivers/media/dvb-frontends/si2168.c
++++ b/drivers/media/dvb-frontends/si2168.c
+@@ -614,7 +614,7 @@ static int si2168_sleep(struct dvb_frontend *fe)
+ 	if (ret)
+ 		goto err;
+ 
+-	/* Firmware B 4.0-11 or later loses warm state during sleep */
++	/* Firmware later than B 4.0-11 loses warm state during sleep */
+ 	if (dev->version > ('B' << 24 | 4 << 16 | 0 << 8 | 11 << 0))
+ 		dev->warm = false;
+ 
+-- 
+2.17.0
+

@@ -1,0 +1,38 @@
+From 726b99e9292357aa7c303add832d9947df907732 Mon Sep 17 00:00:00 2001
+From: Xiongfeng Wang <xiongfeng.wang@linaro.org>
+Date: Mon, 8 Jan 2018 07:52:34 -0500
+Subject: [PATCH 197/437] media: dibx000_common: use strlcpy() instead of
+ strncpy()
+
+gcc-8 reports
+
+drivers/media/dvb-frontends/dibx000_common.c: In function
+'i2c_adapter_init':
+./include/linux/string.h:245:9: warning: '__builtin_strncpy' specified
+bound 48 equals destination size [-Wstringop-truncation]
+
+We need to use strlcpy() to make sure the dest string is
+nul-terminated.
+
+Signed-off-by: Xiongfeng Wang <xiongfeng.wang@linaro.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/dvb-frontends/dibx000_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/dvb-frontends/dibx000_common.c b/drivers/media/dvb-frontends/dibx000_common.c
+index d981233e458f..70119c79ac2b 100644
+--- a/drivers/media/dvb-frontends/dibx000_common.c
++++ b/drivers/media/dvb-frontends/dibx000_common.c
+@@ -424,7 +424,7 @@ static int i2c_adapter_init(struct i2c_adapter *i2c_adap,
+ 				struct i2c_algorithm *algo, const char *name,
+ 				struct dibx000_i2c_master *mst)
+ {
+-	strncpy(i2c_adap->name, name, sizeof(i2c_adap->name));
++	strlcpy(i2c_adap->name, name, sizeof(i2c_adap->name));
+ 	i2c_adap->algo = algo;
+ 	i2c_adap->algo_data = NULL;
+ 	i2c_set_adapdata(i2c_adap, mst);
+-- 
+2.17.0
+

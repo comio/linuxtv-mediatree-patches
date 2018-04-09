@@ -1,0 +1,33 @@
+From 368f08d1c76308f8e271afdc2358ce3f601ae4fe Mon Sep 17 00:00:00 2001
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+Date: Thu, 8 Feb 2018 07:00:02 -0500
+Subject: [PATCH 312/437] media: vivid: Use v4l2_find_nearest_size
+
+Use v4l2_find_nearest_size instead of a driver specific function to find
+nearest matching size.
+
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/vivid/vivid-vid-cap.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/platform/vivid/vivid-vid-cap.c b/drivers/media/platform/vivid/vivid-vid-cap.c
+index 808967c7b0ab..01c703683657 100644
+--- a/drivers/media/platform/vivid/vivid-vid-cap.c
++++ b/drivers/media/platform/vivid/vivid-vid-cap.c
+@@ -561,9 +561,8 @@ int vivid_try_fmt_vid_cap(struct file *file, void *priv,
+ 	mp->field = vivid_field_cap(dev, mp->field);
+ 	if (vivid_is_webcam(dev)) {
+ 		const struct v4l2_frmsize_discrete *sz =
+-			v4l2_find_nearest_format(webcam_sizes,
+-						 VIVID_WEBCAM_SIZES,
+-						 mp->width, mp->height);
++			v4l2_find_nearest_size(webcam_sizes, width, height,
++					       mp->width, mp->height);
+ 
+ 		w = sz->width;
+ 		h = sz->height;
+-- 
+2.17.0
+

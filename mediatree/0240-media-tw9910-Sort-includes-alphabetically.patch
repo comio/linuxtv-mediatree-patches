@@ -1,0 +1,37 @@
+From 90bb83f5d3fed4a265a129c31479dedc0f32850d Mon Sep 17 00:00:00 2001
+From: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Date: Fri, 2 Mar 2018 09:46:36 -0500
+Subject: [PATCH 240/437] media: tw9910: Sort includes alphabetically
+
+Sort include directives alphabetically to ease maintenance.
+
+Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/tw9910.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/i2c/tw9910.c b/drivers/media/i2c/tw9910.c
+index 7c7f3438781c..1fbed4432e36 100644
+--- a/drivers/media/i2c/tw9910.c
++++ b/drivers/media/i2c/tw9910.c
+@@ -16,13 +16,13 @@
+  */
+ 
+ #include <linux/clk.h>
++#include <linux/delay.h>
+ #include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
+ #include <linux/init.h>
++#include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/i2c.h>
+ #include <linux/slab.h>
+-#include <linux/kernel.h>
+-#include <linux/delay.h>
+ #include <linux/v4l2-mediabus.h>
+ #include <linux/videodev2.h>
+ 
+-- 
+2.17.0
+

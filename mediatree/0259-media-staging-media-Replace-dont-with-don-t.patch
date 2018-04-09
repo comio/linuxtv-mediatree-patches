@@ -1,0 +1,30 @@
+From 6f82841d6ec3231fa17e8db0a493bba29bded1ba Mon Sep 17 00:00:00 2001
+From: Arushi Singhal <arushisinghal19971997@gmail.com>
+Date: Sun, 4 Mar 2018 10:48:27 -0500
+Subject: [PATCH 259/437] media: staging: media: Replace "dont" with "don't"
+
+Replace "dont" with "don't".
+"Dont" is not same as "Do not" or "Don't".
+
+Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/staging/media/atomisp/pci/atomisp2/mmu/isp_mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/atomisp/pci/atomisp2/mmu/isp_mmu.c b/drivers/staging/media/atomisp/pci/atomisp2/mmu/isp_mmu.c
+index e36c2a33b41a..f21075c1e503 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp2/mmu/isp_mmu.c
++++ b/drivers/staging/media/atomisp/pci/atomisp2/mmu/isp_mmu.c
+@@ -450,7 +450,7 @@ static void mmu_l1_unmap(struct isp_mmu *mmu, phys_addr_t l1_pt,
+ 			ptr = end;
+ 		}
+ 		/*
+-		 * use the same L2 page next time, so we dont
++		 * use the same L2 page next time, so we don't
+ 		 * need to invalidate and free this PT.
+ 		 */
+ 		/*      atomisp_set_pte(l1_pt, idx, NULL_PTE); */
+-- 
+2.17.0
+

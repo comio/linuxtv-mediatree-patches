@@ -1,0 +1,39 @@
+From cf98de5649fcdbd361f47a99135f3f52231d5ac6 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Tue, 6 Feb 2018 11:47:37 -0500
+Subject: [PATCH 092/437] media: i2c: max2175: use 64-bit arithmetic instead of
+ 32-bit
+
+Add suffix LL to constant 2 in order to give the compiler complete
+information about the proper arithmetic to use. Notice that this
+constant is used in a context that expects an expression of type
+s64 (64 bits, signed).
+
+The expression 2 * (clock_rate - abs_nco_freq) is currently being
+evaluated using 32-bit arithmetic.
+
+Addresses-Coverity-ID: 1446589 ("Unintentional integer overflow")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/max2175.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/max2175.c b/drivers/media/i2c/max2175.c
+index 2f1966bdc473..87cba15b2977 100644
+--- a/drivers/media/i2c/max2175.c
++++ b/drivers/media/i2c/max2175.c
+@@ -643,7 +643,7 @@ static int max2175_set_nco_freq(struct max2175 *ctx, s32 nco_freq)
+ 	if (abs_nco_freq < clock_rate / 2) {
+ 		nco_val_desired = 2 * nco_freq;
+ 	} else {
+-		nco_val_desired = 2 * (clock_rate - abs_nco_freq);
++		nco_val_desired = 2LL * (clock_rate - abs_nco_freq);
+ 		if (nco_freq < 0)
+ 			nco_val_desired = -nco_val_desired;
+ 	}
+-- 
+2.17.0
+

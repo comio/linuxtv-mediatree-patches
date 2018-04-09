@@ -1,0 +1,48 @@
+From 8986ffc08102057241aad6f961c8a3bdd59b40e8 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Tue, 6 Feb 2018 11:46:59 -0500
+Subject: [PATCH 090/437] media: rtl2832: use 64-bit arithmetic instead of
+ 32-bit in rtl2832_set_frontend
+
+Add suffix ULL to constant 7 in order to give the compiler complete
+information about the proper arithmetic to use. Notice that this
+constant is used in a context that expects an expression of type
+u64 (64 bits, unsigned).
+
+The expression dev->pdata->clk * 7 is currently being evaluated
+using 32-bit arithmetic.
+
+Addresses-Coverity-ID: 1271223 ("Unintentional integer overflow")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/dvb-frontends/rtl2832.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/dvb-frontends/rtl2832.c b/drivers/media/dvb-frontends/rtl2832.c
+index 94bf5b7d6f3f..fa3b8169c1a5 100644
+--- a/drivers/media/dvb-frontends/rtl2832.c
++++ b/drivers/media/dvb-frontends/rtl2832.c
+@@ -498,7 +498,7 @@ static int rtl2832_set_frontend(struct dvb_frontend *fe)
+ 	* RSAMP_RATIO = floor(CrystalFreqHz * 7 * pow(2, 22)
+ 	*	/ ConstWithBandwidthMode)
+ 	*/
+-	num = dev->pdata->clk * 7;
++	num = dev->pdata->clk * 7ULL;
+ 	num *= 0x400000;
+ 	num = div_u64(num, bw_mode);
+ 	resamp_ratio =  num & 0x3ffffff;
+@@ -511,7 +511,7 @@ static int rtl2832_set_frontend(struct dvb_frontend *fe)
+ 	*	/ (CrystalFreqHz * 7))
+ 	*/
+ 	num = bw_mode << 20;
+-	num2 = dev->pdata->clk * 7;
++	num2 = dev->pdata->clk * 7ULL;
+ 	num = div_u64(num, num2);
+ 	num = -num;
+ 	cfreq_off_ratio = num & 0xfffff;
+-- 
+2.17.0
+

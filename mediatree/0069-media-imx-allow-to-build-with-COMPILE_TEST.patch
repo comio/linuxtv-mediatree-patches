@@ -1,0 +1,32 @@
+From b4eaa9300e313c47a6b66d373e798148a732dc35 Mon Sep 17 00:00:00 2001
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Date: Tue, 19 Dec 2017 06:42:32 -0500
+Subject: [PATCH 069/437] media: imx: allow to build with COMPILE_TEST
+
+Allow building this driver for other platforms under COMPILE_TEST.
+
+Suggested-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Acked-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/staging/media/imx/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/imx/Kconfig b/drivers/staging/media/imx/Kconfig
+index 2be921cd0d55..59b380cc6d22 100644
+--- a/drivers/staging/media/imx/Kconfig
++++ b/drivers/staging/media/imx/Kconfig
+@@ -1,6 +1,7 @@
+ config VIDEO_IMX_MEDIA
+ 	tristate "i.MX5/6 V4L2 media core driver"
+-	depends on MEDIA_CONTROLLER && VIDEO_V4L2 && ARCH_MXC && IMX_IPUV3_CORE
++	depends on ARCH_MXC || COMPILE_TEST
++	depends on MEDIA_CONTROLLER && VIDEO_V4L2 && IMX_IPUV3_CORE
+ 	depends on VIDEO_V4L2_SUBDEV_API
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select V4L2_FWNODE
+-- 
+2.17.0
+

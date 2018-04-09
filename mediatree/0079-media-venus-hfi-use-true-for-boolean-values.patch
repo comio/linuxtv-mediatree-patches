@@ -1,0 +1,36 @@
+From 3d232c75b2bf03ca007eb579b6a06ff28ec2dcc1 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Tue, 23 Jan 2018 12:54:53 -0500
+Subject: [PATCH 079/437] media: venus: hfi: use true for boolean values
+
+Assign true or false to boolean variables instead of an integer value.
+
+This issue was detected with the help of Coccinelle.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/qcom/venus/hfi_msgs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
+index a681ae5381d6..90c93d9603dc 100644
+--- a/drivers/media/platform/qcom/venus/hfi_msgs.c
++++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
+@@ -659,10 +659,10 @@ static u32 init_done_read_prop(struct venus_core *core, struct venus_inst *inst,
+ 				    prop->buffer_type == HFI_BUFFER_OUTPUT2) {
+ 					switch (prop->data[i]) {
+ 					case HFI_BUFFER_MODE_STATIC:
+-						inst->cap_bufs_mode_static = 1;
++						inst->cap_bufs_mode_static = true;
+ 						break;
+ 					case HFI_BUFFER_MODE_DYNAMIC:
+-						inst->cap_bufs_mode_dynamic = 1;
++						inst->cap_bufs_mode_dynamic = true;
+ 						break;
+ 					default:
+ 						break;
+-- 
+2.17.0
+

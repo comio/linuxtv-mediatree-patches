@@ -1,0 +1,38 @@
+From 4e16c38d2a069d5ad4e42cebbafd46f25fdc9cc8 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Mon, 29 Jan 2018 19:32:01 -0500
+Subject: [PATCH 057/437] media: i2c: ov9650: fix potential integer overflow in
+ __ov965x_set_frame_interval
+
+Cast fi->interval.numerator to u64 in order to avoid a potential integer
+overflow. This variable is being used in a context that expects an
+expression of type u64.
+
+Addresses-Coverity-ID: 1324146 ("Unintentional integer overflow")
+[Sakari Ailus: use do_div() to make this work on 32-bit systems]
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/ov9650.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/i2c/ov9650.c b/drivers/media/i2c/ov9650.c
+index bfd90162a297..5bea31cd41aa 100644
+--- a/drivers/media/i2c/ov9650.c
++++ b/drivers/media/i2c/ov9650.c
+@@ -1136,8 +1136,8 @@ static int __ov965x_set_frame_interval(struct ov965x *ov965x,
+ 	if (fi->interval.denominator == 0)
+ 		return -EINVAL;
+ 
+-	req_int = (u64)(fi->interval.numerator * 10000) /
+-		fi->interval.denominator;
++	req_int = (u64)fi->interval.numerator * 10000;
++	do_div(req_int, fi->interval.denominator);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(ov965x_intervals); i++) {
+ 		const struct ov965x_interval *iv = &ov965x_intervals[i];
+-- 
+2.17.0
+

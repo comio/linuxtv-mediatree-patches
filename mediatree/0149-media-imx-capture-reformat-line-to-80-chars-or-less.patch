@@ -1,0 +1,36 @@
+From 87328bb0a29021c8136558eec1edfe30c3bbc177 Mon Sep 17 00:00:00 2001
+From: Parthiban Nallathambi <pn@denx.de>
+Date: Thu, 15 Feb 2018 04:25:45 -0500
+Subject: [PATCH 149/437] media: imx: capture: reformat line to 80 chars or
+ less
+
+This is a cleanup patch to fix line length issue found
+by checkpatch.pl script.
+
+In this patch, line 144 have been wrapped.
+
+Signed-off-by: Parthiban Nallathambi <pn@denx.de>
+Acked-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/staging/media/imx/imx-media-capture.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/imx/imx-media-capture.c b/drivers/staging/media/imx/imx-media-capture.c
+index 576bdc7e9c42..0ccabe04b0e1 100644
+--- a/drivers/staging/media/imx/imx-media-capture.c
++++ b/drivers/staging/media/imx/imx-media-capture.c
+@@ -141,7 +141,8 @@ static int capture_enum_frameintervals(struct file *file, void *fh,
+ 
+ 	fie.code = cc->codes[0];
+ 
+-	ret = v4l2_subdev_call(priv->src_sd, pad, enum_frame_interval, NULL, &fie);
++	ret = v4l2_subdev_call(priv->src_sd, pad, enum_frame_interval,
++			       NULL, &fie);
+ 	if (ret)
+ 		return ret;
+ 
+-- 
+2.17.0
+

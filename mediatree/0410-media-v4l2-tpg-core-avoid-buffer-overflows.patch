@@ -1,0 +1,37 @@
+From 35029cfebd1379546fa39f4a43f0397a2f7eb7c4 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Thu, 22 Mar 2018 13:54:18 -0400
+Subject: [PATCH 410/437] media: v4l2-tpg-core: avoid buffer overflows
+
+Fix the following warnings:
+	drivers/media/common/v4l2-tpg/v4l2-tpg-core.c:1146 gen_twopix() error: buffer overflow 'buf[1]' 8 <= 8
+	drivers/media/common/v4l2-tpg/v4l2-tpg-core.c:1152 gen_twopix() error: buffer overflow 'buf[1]' 8 <= 8
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/common/v4l2-tpg/v4l2-tpg-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
+index d248d1fb9d1d..37632bc524d4 100644
+--- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
++++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
+@@ -1143,13 +1143,13 @@ static void gen_twopix(struct tpg_data *tpg,
+ 	case V4L2_PIX_FMT_NV24:
+ 		buf[0][offset] = r_y_h;
+ 		buf[1][2 * offset] = g_u_s;
+-		buf[1][2 * offset + 1] = b_v;
++		buf[1][(2 * offset + 1) % 8] = b_v;
+ 		break;
+ 
+ 	case V4L2_PIX_FMT_NV42:
+ 		buf[0][offset] = r_y_h;
+ 		buf[1][2 * offset] = b_v;
+-		buf[1][2 * offset + 1] = g_u_s;
++		buf[1][(2 * offset + 1) %8] = g_u_s;
+ 		break;
+ 
+ 	case V4L2_PIX_FMT_YUYV:
+-- 
+2.17.0
+

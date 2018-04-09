@@ -1,0 +1,36 @@
+From 594ef5b4c3b04c35369f500bee17cb10cdadfe1b Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Fri, 9 Feb 2018 18:11:16 -0500
+Subject: [PATCH 145/437] media: imx-media-internal-sd: Use empty initializer
+
+When building with W=1 the following warning shows up:
+
+drivers/staging/media/imx/imx-media-internal-sd.c:274:49: warning: Using plain integer as NULL pointer
+
+Fix this problem by using an empty initializer, which guarantees that all
+struct members are zero-cleared.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Acked-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/staging/media/imx/imx-media-internal-sd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/imx/imx-media-internal-sd.c b/drivers/staging/media/imx/imx-media-internal-sd.c
+index 70833fe503b5..daf66c2d69ab 100644
+--- a/drivers/staging/media/imx/imx-media-internal-sd.c
++++ b/drivers/staging/media/imx/imx-media-internal-sd.c
+@@ -271,7 +271,7 @@ static int add_internal_subdev(struct imx_media_dev *imxmd,
+ 			       int ipu_id)
+ {
+ 	struct imx_media_internal_sd_platformdata pdata;
+-	struct platform_device_info pdevinfo = {0};
++	struct platform_device_info pdevinfo = {};
+ 	struct platform_device *pdev;
+ 
+ 	pdata.grp_id = isd->id->grp_id;
+-- 
+2.17.0
+

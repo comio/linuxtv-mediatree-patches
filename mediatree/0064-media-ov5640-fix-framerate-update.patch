@@ -1,0 +1,34 @@
+From 0cf5f428b7a3eb3ca0f47c70b9031d8f90cd96b5 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@st.com>
+Date: Thu, 8 Feb 2018 07:22:14 -0500
+Subject: [PATCH 064/437] media: ov5640: fix framerate update
+
+After a framerate update through s_frame_interval(), the new
+framerate was not taken into account when streaming,
+but was taken into account on next session.
+This was due to sensor->current_mode not updated accordingly to new
+framerate setting in ov5640_s_frame_interval().
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/i2c/ov5640.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
+index 3e7b43ce2b7a..03940f0cdfa6 100644
+--- a/drivers/media/i2c/ov5640.c
++++ b/drivers/media/i2c/ov5640.c
+@@ -2374,6 +2374,8 @@ static int ov5640_s_frame_interval(struct v4l2_subdev *sd,
+ 
+ 	sensor->current_fr = frame_rate;
+ 	sensor->frame_interval = fi->interval;
++	sensor->current_mode = ov5640_find_mode(sensor, frame_rate, mode->width,
++						mode->height, true);
+ 	sensor->pending_mode_change = true;
+ out:
+ 	mutex_unlock(&sensor->lock);
+-- 
+2.17.0
+

@@ -1,0 +1,57 @@
+From 09543735ecd27373eeb24bd007b5e3de13b51a7a Mon Sep 17 00:00:00 2001
+From: Tim Harvey <tharvey@gateworks.com>
+Date: Thu, 15 Feb 2018 12:55:31 -0500
+Subject: [PATCH 031/437] media: add digital video decoder entity functions
+
+Add a new media entity function definition for digital TV decoders:
+MEDIA_ENT_F_DTV_DECODER
+
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ Documentation/media/uapi/mediactl/media-types.rst | 11 +++++++++++
+ include/uapi/linux/media.h                        |  5 +++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/Documentation/media/uapi/mediactl/media-types.rst b/Documentation/media/uapi/mediactl/media-types.rst
+index 8d64b0c06ebc..195400e24254 100644
+--- a/Documentation/media/uapi/mediactl/media-types.rst
++++ b/Documentation/media/uapi/mediactl/media-types.rst
+@@ -321,6 +321,17 @@ Types and flags used to represent the media graph elements
+          MIPI CSI-2, ...), and outputs them on its source pad to an output
+          video bus of another type (eDP, MIPI CSI-2, parallel, ...).
+ 
++    -  ..  row 31
++
++       ..  _MEDIA-ENT-F-DTV-DECODER:
++
++       -  ``MEDIA_ENT_F_DTV_DECODER``
++
++       -  Digital video decoder. The basic function of the video decoder is
++	  to accept digital video from a wide variety of sources
++	  and output it in some digital video standard, with appropriate
++	  timing signals.
++
+ ..  tabularcolumns:: |p{5.5cm}|p{12.0cm}|
+ 
+ .. _media-entity-flag:
+diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+index b9b9446095e9..2f12328e260d 100644
+--- a/include/uapi/linux/media.h
++++ b/include/uapi/linux/media.h
+@@ -109,6 +109,11 @@ struct media_device_info {
+ #define MEDIA_ENT_F_VID_MUX			(MEDIA_ENT_F_BASE + 0x5001)
+ #define MEDIA_ENT_F_VID_IF_BRIDGE		(MEDIA_ENT_F_BASE + 0x5002)
+ 
++/*
++ * Digital video decoder entities
++ */
++#define MEDIA_ENT_F_DTV_DECODER			(MEDIA_ENT_F_BASE + 0x6001)
++
+ /*
+  * Connectors
+  */
+-- 
+2.17.0
+

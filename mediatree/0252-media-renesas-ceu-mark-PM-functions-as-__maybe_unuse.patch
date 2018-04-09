@@ -1,0 +1,52 @@
+From 7dfdc7db8635f52dde36315258d74521e52d4874 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 28 Feb 2018 18:19:37 -0500
+Subject: [PATCH 252/437] media: renesas-ceu: mark PM functions as
+ __maybe_unused
+
+The PM runtime operations are unused when CONFIG_PM is disabled,
+leading to a harmless warning:
+
+drivers/media/platform/renesas-ceu.c:1003:12: error: 'ceu_runtime_suspend' defined but not used [-Werror=unused-function]
+ static int ceu_runtime_suspend(struct device *dev)
+            ^~~~~~~~~~~~~~~~~~~
+drivers/media/platform/renesas-ceu.c:987:12: error: 'ceu_runtime_resume' defined but not used [-Werror=unused-function]
+ static int ceu_runtime_resume(struct device *dev)
+            ^~~~~~~~~~~~~~~~~~
+
+This adds a __maybe_unused annotation to shut up the warning.
+
+Fixes: 32e5a70dc8f4 ("media: platform: Add Renesas CEU driver")
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/platform/renesas-ceu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/renesas-ceu.c b/drivers/media/platform/renesas-ceu.c
+index 903c05c67d91..6599dba5ab84 100644
+--- a/drivers/media/platform/renesas-ceu.c
++++ b/drivers/media/platform/renesas-ceu.c
+@@ -984,7 +984,7 @@ static int ceu_init_mbus_fmt(struct ceu_device *ceudev)
+ /*
+  * ceu_runtime_resume() - soft-reset the interface and turn sensor power on.
+  */
+-static int ceu_runtime_resume(struct device *dev)
++static int __maybe_unused ceu_runtime_resume(struct device *dev)
+ {
+ 	struct ceu_device *ceudev = dev_get_drvdata(dev);
+ 	struct v4l2_subdev *v4l2_sd = ceudev->sd->v4l2_sd;
+@@ -1000,7 +1000,7 @@ static int ceu_runtime_resume(struct device *dev)
+  * ceu_runtime_suspend() - disable capture and interrupts and soft-reset.
+  *			   Turn sensor power off.
+  */
+-static int ceu_runtime_suspend(struct device *dev)
++static int __maybe_unused ceu_runtime_suspend(struct device *dev)
+ {
+ 	struct ceu_device *ceudev = dev_get_drvdata(dev);
+ 	struct v4l2_subdev *v4l2_sd = ceudev->sd->v4l2_sd;
+-- 
+2.17.0
+

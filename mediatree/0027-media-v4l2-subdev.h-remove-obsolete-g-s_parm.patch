@@ -1,0 +1,39 @@
+From 7ae217c0361675b50f862137b95f1bf5c8214213 Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hansverk@cisco.com>
+Date: Fri, 19 Jan 2018 08:57:44 -0500
+Subject: [PATCH 027/437] media: v4l2-subdev.h: remove obsolete g/s_parm
+
+Signed-off-by: Hans Verkuil <hansverk@cisco.com>
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ include/media/v4l2-subdev.h | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+index 980a86c08fce..457917e9237f 100644
+--- a/include/media/v4l2-subdev.h
++++ b/include/media/v4l2-subdev.h
+@@ -393,10 +393,6 @@ struct v4l2_mbus_frame_desc {
+  *
+  * @g_pixelaspect: callback to return the pixelaspect ratio.
+  *
+- * @g_parm: callback for VIDIOC_G_PARM() ioctl handler code.
+- *
+- * @s_parm: callback for VIDIOC_S_PARM() ioctl handler code.
+- *
+  * @g_frame_interval: callback for VIDIOC_SUBDEV_G_FRAME_INTERVAL()
+  *		      ioctl handler code.
+  *
+@@ -434,8 +430,6 @@ struct v4l2_subdev_video_ops {
+ 	int (*g_input_status)(struct v4l2_subdev *sd, u32 *status);
+ 	int (*s_stream)(struct v4l2_subdev *sd, int enable);
+ 	int (*g_pixelaspect)(struct v4l2_subdev *sd, struct v4l2_fract *aspect);
+-	int (*g_parm)(struct v4l2_subdev *sd, struct v4l2_streamparm *param);
+-	int (*s_parm)(struct v4l2_subdev *sd, struct v4l2_streamparm *param);
+ 	int (*g_frame_interval)(struct v4l2_subdev *sd,
+ 				struct v4l2_subdev_frame_interval *interval);
+ 	int (*s_frame_interval)(struct v4l2_subdev *sd,
+-- 
+2.17.0
+

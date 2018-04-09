@@ -1,0 +1,53 @@
+From 2d6e871abd28cb32f984f24190a611009a13adbc Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Wed, 7 Mar 2018 05:09:30 -0500
+Subject: [PATCH 289/437] media: cxd2880: don't return unitialized values
+
+drivers/media/dvb-frontends/cxd2880/cxd2880_devio_spi.c:59 cxd2880_io_spi_read_reg() error: uninitialized symbol 'ret'.
+drivers/media/dvb-frontends/cxd2880/cxd2880_devio_spi.c:111 cxd2880_io_spi_write_reg() error: uninitialized symbol 'ret'.
+drivers/media/dvb-frontends/cxd2880/cxd2880_tnrdmd.c:2985 cxd2880_tnrdmd_set_cfg() error: uninitialized symbol 'ret'.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/dvb-frontends/cxd2880/cxd2880_devio_spi.c | 4 ++--
+ drivers/media/dvb-frontends/cxd2880/cxd2880_tnrdmd.c    | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/dvb-frontends/cxd2880/cxd2880_devio_spi.c b/drivers/media/dvb-frontends/cxd2880/cxd2880_devio_spi.c
+index d2e37c95d748..aba59400859e 100644
+--- a/drivers/media/dvb-frontends/cxd2880/cxd2880_devio_spi.c
++++ b/drivers/media/dvb-frontends/cxd2880/cxd2880_devio_spi.c
+@@ -16,7 +16,7 @@ static int cxd2880_io_spi_read_reg(struct cxd2880_io *io,
+ 				   u8 sub_address, u8 *data,
+ 				   u32 size)
+ {
+-	int ret;
++	int ret = 0;
+ 	struct cxd2880_spi *spi = NULL;
+ 	u8 send_data[6];
+ 	u8 *read_data_top = data;
+@@ -64,7 +64,7 @@ static int cxd2880_io_spi_write_reg(struct cxd2880_io *io,
+ 				    u8 sub_address,
+ 				    const u8 *data, u32 size)
+ {
+-	int ret;
++	int ret = 0;
+ 	struct cxd2880_spi *spi = NULL;
+ 	u8 send_data[BURST_WRITE_MAX + 4];
+ 	const u8 *write_data_top = data;
+diff --git a/drivers/media/dvb-frontends/cxd2880/cxd2880_tnrdmd.c b/drivers/media/dvb-frontends/cxd2880/cxd2880_tnrdmd.c
+index 25851bbb846e..4cf2d7cfd3f5 100644
+--- a/drivers/media/dvb-frontends/cxd2880/cxd2880_tnrdmd.c
++++ b/drivers/media/dvb-frontends/cxd2880/cxd2880_tnrdmd.c
+@@ -2503,7 +2503,7 @@ int cxd2880_tnrdmd_set_cfg(struct cxd2880_tnrdmd *tnr_dmd,
+ 			   enum cxd2880_tnrdmd_cfg_id id,
+ 			   int value)
+ {
+-	int ret;
++	int ret = 0;
+ 	u8 data[2] = { 0 };
+ 	u8 need_sub_setting = 0;
+ 
+-- 
+2.17.0
+

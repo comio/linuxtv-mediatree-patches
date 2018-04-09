@@ -1,0 +1,35 @@
+From 9c4be2847f797facad0a6892a858a771fb0b0a7d Mon Sep 17 00:00:00 2001
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Date: Fri, 9 Mar 2018 12:01:08 -0500
+Subject: [PATCH 369/437] media: V4L: remove myself as soc-camera maintainer
+
+The soc-camera framework is deprecated, patches for it are very rare
+and only contain trivial clean up. Further I haven't got any more
+soc-camera systems running modern kernels.
+
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ MAINTAINERS | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9300f3648f51..8127cfee6509 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12884,10 +12884,9 @@ S:	Maintained
+ F:	drivers/net/ethernet/smsc/smsc9420.*
+ 
+ SOC-CAMERA V4L2 SUBSYSTEM
+-M:	Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+ L:	linux-media@vger.kernel.org
+ T:	git git://linuxtv.org/media_tree.git
+-S:	Maintained
++S:	Orphan
+ F:	include/media/soc*
+ F:	drivers/media/i2c/soc_camera/
+ F:	drivers/media/platform/soc_camera/
+-- 
+2.17.0
+

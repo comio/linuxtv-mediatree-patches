@@ -1,0 +1,30 @@
+From 583c263ce9d81ee1eaf0d33ed125f4113a470133 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date: Fri, 23 Mar 2018 06:56:55 -0400
+Subject: [PATCH 421/437] media: s2255drv: fix a casting warning
+
+drivers/media/usb/s2255/s2255drv.c:651 s2255_fillbuff() warn: argument 3 to %08lx specifier is cast from pointer
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/usb/s2255/s2255drv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/usb/s2255/s2255drv.c b/drivers/media/usb/s2255/s2255drv.c
+index a00a15f55d37..82927eb334c4 100644
+--- a/drivers/media/usb/s2255/s2255drv.c
++++ b/drivers/media/usb/s2255/s2255drv.c
+@@ -648,8 +648,8 @@ static void s2255_fillbuff(struct s2255_vc *vc,
+ 		pr_err("s2255: =======no frame\n");
+ 		return;
+ 	}
+-	dprintk(dev, 2, "s2255fill at : Buffer 0x%08lx size= %d\n",
+-		(unsigned long)vbuf, pos);
++	dprintk(dev, 2, "s2255fill at : Buffer %p size= %d\n",
++		vbuf, pos);
+ }
+ 
+ 
+-- 
+2.17.0
+

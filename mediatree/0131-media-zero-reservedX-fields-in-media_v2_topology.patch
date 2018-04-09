@@ -1,0 +1,55 @@
+From 2476da8ef3fa4bdede0a4eaa69f2b598136420c3 Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Date: Sat, 3 Feb 2018 13:06:01 -0500
+Subject: [PATCH 131/437] media: zero reservedX fields in media_v2_topology
+
+The MEDIA_IOC_G_TOPOLOGY implementation did not zero the reservedX fields.
+Fix this.
+
+Found with v4l2-compliance.
+
+Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ drivers/media/media-device.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index 5d55743f970c..35e81f7c0d2f 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -266,6 +266,7 @@ static long media_device_get_topology(struct media_device *mdev,
+ 		uentity++;
+ 	}
+ 	topo->num_entities = i;
++	topo->reserved1 = 0;
+ 
+ 	/* Get interfaces and number of interfaces */
+ 	i = 0;
+@@ -301,6 +302,7 @@ static long media_device_get_topology(struct media_device *mdev,
+ 		uintf++;
+ 	}
+ 	topo->num_interfaces = i;
++	topo->reserved2 = 0;
+ 
+ 	/* Get pads and number of pads */
+ 	i = 0;
+@@ -327,6 +329,7 @@ static long media_device_get_topology(struct media_device *mdev,
+ 		upad++;
+ 	}
+ 	topo->num_pads = i;
++	topo->reserved3 = 0;
+ 
+ 	/* Get links and number of links */
+ 	i = 0;
+@@ -358,6 +361,7 @@ static long media_device_get_topology(struct media_device *mdev,
+ 		ulink++;
+ 	}
+ 	topo->num_links = i;
++	topo->reserved4 = 0;
+ 
+ 	return ret;
+ }
+-- 
+2.17.0
+
